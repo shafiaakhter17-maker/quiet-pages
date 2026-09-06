@@ -1,1375 +1,413 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#050505">
-<link rel="manifest" href="manifest.json">
-
-<title>My Little World</title>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: #050505;
-  color: #eee9df;
-  font-family: "Cormorant Garamond", Georgia, serif;
-}
-
-/* SIDEBAR */
-.sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 117px;
-  height: 100vh;
-  border-right: 1px solid #333;
-  padding: 30px 15px;
-  z-index: 10;
-  background: #050505;
-}
-
-.logo {
-  text-align: center;
-  font-size: 29px;
-  line-height: 1.45;
-  font-weight: 600;
-  margin-bottom: 55px;
-}
-
-.logo-heart {
-  display: block;
-  font-size: 28px;
-  margin-bottom: 8px;
-}
-
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.nav button {
-  width: 100%;
-  border: 1px solid #333;
-  background: #eee9df;
-  color: #171717;
-  font-family: inherit;
-  font-size: 17px;
-  padding: 7px 4px;
-  cursor: pointer;
-  transition: .2s;
-}
-
-.nav button:hover,
-.nav button.active {
-  background: #171717;
-  color: #eee9df;
-  border-color: #eee9df;
-}
-
-/* MAIN */
-main {
-  margin-left: 117px;
-  padding: 25px 22px 60px;
-  min-height: 100vh;
-}
-
-.page {
-  display: none;
-}
-
-.page.active {
-  display: block;
-}
-
-/* HOME */
-.welcome {
-  font-size: 21px;
-  margin-bottom: 3px;
-}
-
-.home-title {
-  font-size: 48px;
-  line-height: 1.05;
-  margin: 0;
-  font-weight: 700;
-}
-
-.subtitle {
-  font-size: 23px;
-  line-height: 1.05;
-  max-width: 580px;
-  margin: 12px 0 3px;
-}
-
-.date {
-  font-size: 22px;
-  margin-bottom: 10px;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 8px;
-}
-
-.card {
-  border: 1px solid #383838;
-  min-height: 240px;
-  padding: 26px 28px;
-  position: relative;
-  cursor: pointer;
-  transition: .25s;
-}
-
-.card:hover {
-  border-color: #aaa;
-  transform: translateY(-2px);
-}
-
-.card-number {
-  font-size: 18px;
-}
-
-.card-icon {
-  position: absolute;
-  right: 28px;
-  top: 45px;
-  font-size: 48px;
-}
-
-.card h2 {
-  font-size: 29px;
-  margin: 8px 0 2px;
-}
-
-.card p {
-  font-size: 22px;
-  line-height: 1.05;
-  margin: 0;
-  max-width: 220px;
-}
-
-.arrow {
-  position: absolute;
-  bottom: 28px;
-  left: 28px;
-  font-size: 29px;
-}
-
-/* SECTION HEADERS */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #333;
-  padding-bottom: 14px;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  font-size: 42px;
-  margin: 0;
-}
-
-.section-intro {
-  font-size: 21px;
-  margin-top: -10px;
-  margin-bottom: 20px;
-}
-
-.add-btn {
-  border: 1px solid #eee9df;
-  background: transparent;
-  color: #eee9df;
-  padding: 9px 14px;
-  font-family: inherit;
-  font-size: 17px;
-  cursor: pointer;
-}
-
-.add-btn:hover {
-  background: #eee9df;
-  color: #050505;
-}
-
-/* FORMS */
-.form-box {
-  display: none;
-  border: 1px solid #444;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.form-box.show {
-  display: block;
-}
-
-input,
-textarea,
-select {
-  width: 100%;
-  background: #0b0b0b;
-  border: 1px solid #444;
-  color: #eee9df;
-  padding: 12px;
-  font-family: inherit;
-  font-size: 18px;
-  margin-bottom: 12px;
-  outline: none;
-}
-
-textarea {
-  min-height: 150px;
-  resize: vertical;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #eee9df;
-}
-
-.form-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.save-btn,
-.cancel-btn {
-  font-family: inherit;
-  font-size: 17px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-
-.save-btn {
-  background: #eee9df;
-  color: #050505;
-  border: 1px solid #eee9df;
-}
-
-.cancel-btn {
-  background: transparent;
-  color: #eee9df;
-  border: 1px solid #555;
-}
-
-/* ENTRIES */
-.items {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.item {
-  border: 1px solid #383838;
-  padding: 20px;
-  min-height: 140px;
-  position: relative;
-}
-
-.item-number {
-  font-size: 17px;
-}
-
-.item h3 {
-  font-size: 26px;
-  margin: 5px 0;
-}
-
-.item p {
-  font-size: 18px;
-  line-height: 1.2;
-  white-space: pre-wrap;
-  margin: 0;
-}
-
-.delete-btn {
-  position: absolute;
-  right: 12px;
-  top: 10px;
-  border: none;
-  background: transparent;
-  color: #aaa;
-  font-family: inherit;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.delete-btn:hover {
-  color: white;
-}
-
-/* TODO */
-.task {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid #383838;
-  padding: 14px;
-  margin-bottom: 10px;
-  font-size: 20px;
-}
-
-.task input {
-  width: auto;
-  margin: 0;
-}
-
-.task.done span {
-  text-decoration: line-through;
-  opacity: .5;
-}
-
-/* MOOD */
-.mood-choice {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-}
-
-.mood-choice button {
-  background: transparent;
-  color: #eee9df;
-  border: 1px solid #444;
-  font-family: inherit;
-  font-size: 27px;
-  padding: 8px 13px;
-  cursor: pointer;
-}
-
-.mood-choice button:hover {
-  border-color: white;
-}
-
-/* EMPTY */
-.empty {
-  border: 1px dashed #333;
-  padding: 35px 20px;
-  text-align: center;
-  font-size: 21px;
-  color: #aaa;
-}
-
-/* MOBILE */
-@media (max-width: 700px) {
-
-  .sidebar {
-    width: 117px;
-  }
-
-  main {
-    margin-left: 117px;
-    padding: 20px 15px 50px;
-  }
-
-  .home-title {
-    font-size: 40px;
-  }
-
-  .subtitle {
-    font-size: 20px;
-  }
-
-  .cards,
-  .items {
-    grid-template-columns: 1fr;
-  }
-
-  .card {
-    min-height: 210px;
-  }
-
-  .section-header {
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .section-title {
-    font-size: 34px;
-  }
-
-  .add-btn {
-    font-size: 15px;
-    white-space: nowrap;
-  }
-
-  .logo {
-    font-size: 27px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Little Notes</title>
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --card-bg: #111115;
+      --card-border: #22222a;
+      --text: #e0e0e0;
+      --text-muted: #888890;
+      --accent: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 240px;
+      background-color: var(--bg);
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      gap: 20px;
+    }
+
+    .brand {
+      text-align: center;
+      padding-bottom: 10px;
+    }
+
+    .brand h2 {
+      font-family: cursive, 'Brush Script MT', sans-serif;
+      font-weight: normal;
+      font-size: 1.4rem;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-item {
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background-color: var(--card-bg);
+      color: var(--text);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* Main Area */
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    /* Dashboard Grid */
+    .greeting {
+      margin-bottom: 30px;
+    }
+
+    .greeting h1 {
+      font-family: cursive, 'Brush Script MT', sans-serif;
+      font-size: 2.2rem;
+      font-weight: normal;
+    }
+
+    .greeting p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: #444;
+    }
+
+    .card h3 {
+      margin-top: 15px;
+      font-weight: normal;
+    }
+
+    /* Sub-views Layout */
+    .layout-split {
+      display: flex;
+      gap: 20px;
+      height: 80vh;
+    }
+
+    .panel {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .list-item {
+      padding: 12px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .list-item:hover {
+      background-color: #1a1a22;
+    }
+
+    .list-item h4 {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+
+    .list-item p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Form Fields */
+    input, textarea {
+      width: 100%;
+      background: #181820;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    button {
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .todo-item.done span {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-
-  <div class="logo">
-    <span class="logo-heart">♡</span>
-    my<br>
-    little<br>
-    notes
-  </div>
-
-  <nav class="nav">
-    <button onclick="showPage('home', this)">⌂ Home</button>
-    <button onclick="showPage('journal', this)">♧ Journal</button>
-    <button onclick="showPage('todo', this)">☑ To Do<br>List</button>
-    <button onclick="showPage('notes', this)">▤ Notes</button>
-    <button onclick="showPage('hobbies', this)">♡ Hobbies</button>
-    <button onclick="showPage('mood', this)">☾ Mood</button>
-    <button onclick="showPage('bookshelf', this)">▥ Bookshelf</button>
-  </nav>
-
-</aside>
-
-
-<main>
-
-<!-- ================= HOME ================= -->
-
-<section id="home" class="page active">
-
-  <div class="welcome">welcome back ♡</div>
-
-  <h1 class="home-title">my little<br>world.</h1>
-
-  <div class="subtitle">
-    A quiet place for all the little things that make up your world.
-  </div>
-
-  <div class="date" id="date"></div>
-
-  <div class="cards">
-
-    <div class="card" onclick="showPage('journal')">
-      <div class="card-number">01</div>
-      <div class="card-icon">✎</div>
-      <h2>Journal</h2>
-      <p>write your thoughts & memories</p>
-      <div class="arrow">↗</div>
+  <div class="sidebar">
+    <div class="brand">
+      <h2>My Little Notes ♡</h2>
     </div>
-
-    <div class="card" onclick="showPage('todo')">
-      <div class="card-number">02</div>
-      <div class="card-icon">☑</div>
-      <h2>To Do</h2>
-      <p>little things to get done</p>
-      <div class="arrow">↗</div>
+    <ul class="nav-links">
+      <li class="nav-item active" onclick="showView('home')">Home</li>
+      <li class="nav-item" onclick="showView('journal')">Journal</li>
+      <li class="nav-item" onclick="showView('todo')">To Do List</li>
+      <li class="nav-item" onclick="showView('notes')">Notes</li>
+      <li class="nav-item" onclick="showView('hobbies')">Hobbies</li>
+      <li class="nav-item" onclick="showView('mood')">Mood</li>
+      <li class="nav-item" onclick="showView('bookshelf')">Bookshelf</li>
+    </ul>
+    <div class="sidebar-footer">
+      Small notes for a big life ♡
     </div>
-
-    <div class="card" onclick="showPage('notes')">
-      <div class="card-number">03</div>
-      <div class="card-icon">▤</div>
-      <h2>Notes</h2>
-      <p>save thoughts & ideas</p>
-      <div class="arrow">↗</div>
-    </div>
-
-    <div class="card" onclick="showPage('hobbies')">
-      <div class="card-number">04</div>
-      <div class="card-icon">♡</div>
-      <h2>Hobbies</h2>
-      <p>things you love doing</p>
-      <div class="arrow">↗</div>
-    </div>
-
-    <div class="card" onclick="showPage('mood')">
-      <div class="card-number">05</div>
-      <div class="card-icon">☾</div>
-      <h2>Mood</h2>
-      <p>how are you feeling today?</p>
-      <div class="arrow">↗</div>
-    </div>
-
-    <div class="card" onclick="showPage('bookshelf')">
-      <div class="card-number">06</div>
-      <div class="card-icon">▥</div>
-      <h2>Bookshelf</h2>
-      <p>books you love & want to read</p>
-      <div class="arrow">↗</div>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- ================= JOURNAL ================= -->
-
-<section id="journal" class="page">
-
-  <div class="section-header">
-    <h1 class="section-title">Journal ♡</h1>
-    <button class="add-btn" onclick="toggleForm('journalForm')">
-      + New Entry
-    </button>
   </div>
 
-  <p class="section-intro">
-    a little space for your thoughts, memories & feelings.
-  </p>
-
-  <div id="journalForm" class="form-box">
-
-    <input id="journalTitle" placeholder="Entry title...">
-
-    <textarea id="journalText"
-      placeholder="Write whatever is on your mind..."></textarea>
-
-    <div class="form-buttons">
-      <button class="save-btn" onclick="saveJournal()">Save</button>
-      <button class="cancel-btn" onclick="toggleForm('journalForm')">
-        Cancel
-      </button>
-    </div>
-
-  </div>
-
-  <div id="journalItems" class="items"></div>
-
-</section>
-
-
-<!-- ================= TODO ================= -->
-
-<section id="todo" class="page">
-
-  <div class="section-header">
-    <h1 class="section-title">To Do ✓</h1>
-
-    <button class="add-btn" onclick="toggleForm('todoForm')">
-      + Add Task
-    </button>
-  </div>
-
-  <p class="section-intro">
-    little things you want to get done.
-  </p>
-
-  <div id="todoForm" class="form-box">
-
-    <input id="taskText" placeholder="What do you need to do?">
-
-    <div class="form-buttons">
-      <button class="save-btn" onclick="saveTask()">Add</button>
-      <button class="cancel-btn" onclick="toggleForm('todoForm')">
-        Cancel
-      </button>
-    </div>
-
-  </div>
-
-  <div id="todoItems"></div>
-
-</section>
-
-
-<!-- ================= NOTES ================= -->
-
-<section id="notes" class="page">
-
-  <div class="section-header">
-    <h1 class="section-title">Notes ✎</h1>
-
-    <button class="add-btn" onclick="toggleForm('notesForm')">
-      + New Note
-    </button>
-  </div>
-
-  <p class="section-intro">
-    thoughts, ideas, reminders & anything else.
-  </p>
-
-  <div id="notesForm" class="form-box">
-
-    <input id="noteTitle" placeholder="Note title...">
-
-    <textarea id="noteText"
-      placeholder="Write your note..."></textarea>
-
-    <div class="form-buttons">
-      <button class="save-btn" onclick="saveNote()">Save</button>
-      <button class="cancel-btn" onclick="toggleForm('notesForm')">
-        Cancel
-      </button>
-    </div>
-
-  </div>
-
-  <div id="noteItems" class="items"></div>
-
-</section>
-
-
-<!-- ================= HOBBIES ================= -->
-
-<section id="hobbies" class="page">
-
-  <div class="section-header">
-    <h1 class="section-title">Hobbies ♡</h1>
-
-    <button class="add-btn" onclick="toggleForm('hobbyForm')">
-      + Add Hobby
-    </button>
-  </div>
-
-  <p class="section-intro">
-    things you enjoy spending your time on.
-  </p>
-
-  <div id="hobbyForm" class="form-box">
-
-    <input id="hobbyName" placeholder="Hobby name...">
-
-    <textarea id="hobbyText"
-      placeholder="Tell me a little about it..."></textarea>
-
-    <div class="form-buttons">
-      <button class="save-btn" onclick="saveHobby()">Save</button>
-      <button class="cancel-btn" onclick="toggleForm('hobbyForm')">
-        Cancel
-      </button>
-    </div>
-
-  </div>
-
-  <div id="hobbyItems" class="items"></div>
-
-</section>
-
-
-<!-- ================= MOOD ================= -->
-
-<section id="mood" class="page">
-
-  <div class="section-header">
-    <h1 class="section-title">Mood ☾</h1>
-
-    <button class="add-btn" onclick="toggleForm('moodForm')">
-      + Add Mood
-    </button>
-  </div>
-
-  <p class="section-intro">
-    how are you feeling today?
-  </p>
-
-  <div id="moodForm" class="form-box">
-
-    <div class="mood-choice">
-      <button onclick="chooseMood('♡ Happy')">♡</button>
-      <button onclick="chooseMood('☾ Calm')">☾</button>
-      <button onclick="chooseMood('☆ Excited')">☆</button>
-      <button onclick="chooseMood('~ Tired')">~</button>
-      <button onclick="chooseMood('• Sad')">•</button>
-      <button onclick="chooseMood('✦ Grateful')">✦</button>
-    </div>
-
-    <input id="selectedMood"
-      placeholder="Or write your own mood...">
-
-    <textarea id="moodText"
-      placeholder="Write a little about how you're feeling..."></textarea>
-
-    <div class="form-buttons">
-      <button class="save-btn" onclick="saveMood()">Save</button>
-      <button class="cancel-btn" onclick="toggleForm('moodForm')">
-        Cancel
-      </button>
-    </div>
-
-  </div>
-
-  <div id="moodItems" class="items"></div>
-
-</section>
-
-
-<!-- ================= BOOKSHELF ================= -->
-
-<section id="bookshelf" class="page">
-
-  <div class="section-header">
-    <h1 class="section-title">Bookshelf ▥</h1>
-
-    <button class="add-btn" onclick="toggleForm('bookForm')">
-      + Add Book
-    </button>
-  </div>
-
-  <p class="section-intro">
-    books you love, are reading, or want to read.
-  </p>
-
-  <div id="bookForm" class="form-box">
-
-    <input id="bookTitle" placeholder="Book title...">
-
-    <input id="bookAuthor" placeholder="Author...">
-
-    <textarea id="bookThoughts"
-      placeholder="Your thoughts about this book..."></textarea>
-
-    <div class="form-buttons">
-      <button class="save-btn" onclick="saveBook()">Save</button>
-      <button class="cancel-btn" onclick="toggleForm('bookForm')">
-        Cancel
-      </button>
-    </div>
-
-  </div>
-
-  <div id="bookItems" class="items"></div>
-
-</section>
-
-</main>
-
-
-<script>
-
-/* ================= BASIC NAVIGATION ================= */
-
-function showPage(pageId, clickedButton) {
-
-  document.querySelectorAll(".page").forEach(page => {
-    page.classList.remove("active");
-  });
-
-  const page = document.getElementById(pageId);
-
-  if (page) {
-    page.classList.add("active");
-  }
-
-  document.querySelectorAll(".nav button").forEach(button => {
-    button.classList.remove("active");
-  });
-
-  if (clickedButton) {
-    clickedButton.classList.add("active");
-  }
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-}
-
-
-/* ================= FORMS ================= */
-
-function toggleForm(id) {
-
-  const form = document.getElementById(id);
-
-  if (form.classList.contains("show")) {
-    form.classList.remove("show");
-  } else {
-    form.classList.add("show");
-  }
-}
-
-
-/* ================= DATE ================= */
-
-const now = new Date();
-
-document.getElementById("date").textContent =
-  now.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "long",
-    day: "numeric"
-  });
-
-
-/* ================= JOURNAL ================= */
-
-let journals =
-  JSON.parse(localStorage.getItem("myLittleWorldJournals")) || [];
-
-function saveJournal() {
-
-  const title =
-    document.getElementById("journalTitle").value.trim();
-
-  const text =
-    document.getElementById("journalText").value.trim();
-
-  if (!title && !text) {
-    alert("Write something first ♡");
-    return;
-  }
-
-  journals.push({
-    title: title || "Untitled",
-    text: text,
-    date: new Date().toLocaleDateString()
-  });
-
-  localStorage.setItem(
-    "myLittleWorldJournals",
-    JSON.stringify(journals)
-  );
-
-  document.getElementById("journalTitle").value = "";
-  document.getElementById("journalText").value = "";
-
-  document.getElementById("journalForm")
-    .classList.remove("show");
-
-  displayJournals();
-}
-
-function displayJournals() {
-
-  const container =
-    document.getElementById("journalItems");
-
-  if (journals.length === 0) {
-
-    container.innerHTML =
-      `<div class="empty">
-        Your journal is waiting for your first entry ♡
-      </div>`;
-
-    return;
-  }
-
-  container.innerHTML = journals.map((entry, index) => `
-
-    <article class="item">
-
-      <button class="delete-btn"
-        onclick="deleteJournal(${index})">
-        ×
-      </button>
-
-      <div class="item-number">
-        ${String(index + 1).padStart(2, "0")}
+  <div class="main-content">
+
+    <div id="home" class="view active">
+      <div class="greeting">
+        <h1>Good Morning ♡</h1>
+        <p>A little progress each day adds up to big things.</p>
       </div>
-
-      <h3>${escapeHTML(entry.title)}</h3>
-
-      <p>${escapeHTML(entry.text)}</p>
-
-      <small>${entry.date}</small>
-
-    </article>
-
-  `).join("");
-}
-
-function deleteJournal(index) {
-
-  journals.splice(index, 1);
-
-  localStorage.setItem(
-    "myLittleWorldJournals",
-    JSON.stringify(journals)
-  );
-
-  displayJournals();
-}
-
-
-/* ================= TODO ================= */
-
-let tasks =
-  JSON.parse(localStorage.getItem("myLittleWorldTasks")) || [];
-
-function saveTask() {
-
-  const input =
-    document.getElementById("taskText");
-
-  const text = input.value.trim();
-
-  if (!text) {
-    alert("Write a task first ♡");
-    return;
-  }
-
-  tasks.push({
-    text: text,
-    done: false
-  });
-
-  localStorage.setItem(
-    "myLittleWorldTasks",
-    JSON.stringify(tasks)
-  );
-
-  input.value = "";
-
-  document.getElementById("todoForm")
-    .classList.remove("show");
-
-  displayTasks();
-}
-
-function toggleTask(index) {
-
-  tasks[index].done = !tasks[index].done;
-
-  localStorage.setItem(
-    "myLittleWorldTasks",
-    JSON.stringify(tasks)
-  );
-
-  displayTasks();
-}
-
-function deleteTask(index) {
-
-  tasks.splice(index, 1);
-
-  localStorage.setItem(
-    "myLittleWorldTasks",
-    JSON.stringify(tasks)
-  );
-
-  displayTasks();
-}
-
-function displayTasks() {
-
-  const container =
-    document.getElementById("todoItems");
-
-  if (tasks.length === 0) {
-
-    container.innerHTML =
-      `<div class="empty">
-        No tasks yet. Add something you want to get done ♡
-      </div>`;
-
-    return;
-  }
-
-  container.innerHTML = tasks.map((task, index) => `
-
-    <div class="task ${task.done ? "done" : ""}">
-
-      <input type="checkbox"
-        ${task.done ? "checked" : ""}
-        onchange="toggleTask(${index})">
-
-      <span>${escapeHTML(task.text)}</span>
-
-      <button class="delete-btn"
-        onclick="deleteTask(${index})">
-        ×
-      </button>
-
+      <div class="grid">
+        <div class="card" onclick="showView('journal')">
+          <h3>Journal →</h3>
+        </div>
+        <div class="card" onclick="showView('todo')">
+          <h3>To Do List →</h3>
+        </div>
+        <div class="card" onclick="showView('notes')">
+          <h3>Notes →</h3>
+        </div>
+        <div class="card" onclick="showView('hobbies')">
+          <h3>Hobbies →</h3>
+        </div>
+        <div class="card" onclick="showView('mood')">
+          <h3>Mood →</h3>
+        </div>
+        <div class="card" onclick="showView('bookshelf')">
+          <h3>Bookshelf →</h3>
+        </div>
+      </div>
     </div>
 
-  `).join("");
-}
-
-
-/* ================= NOTES ================= */
-
-let notes =
-  JSON.parse(localStorage.getItem("myLittleWorldNotes")) || [];
-
-function saveNote() {
-
-  const title =
-    document.getElementById("noteTitle").value.trim();
-
-  const text =
-    document.getElementById("noteText").value.trim();
-
-  if (!title && !text) {
-    alert("Write something first ♡");
-    return;
-  }
-
-  notes.push({
-    title: title || "Untitled",
-    text: text,
-    date: new Date().toLocaleDateString()
-  });
-
-  localStorage.setItem(
-    "myLittleWorldNotes",
-    JSON.stringify(notes)
-  );
-
-  document.getElementById("noteTitle").value = "";
-  document.getElementById("noteText").value = "";
-
-  document.getElementById("notesForm")
-    .classList.remove("show");
-
-  displayNotes();
-}
-
-function deleteNote(index) {
-
-  notes.splice(index, 1);
-
-  localStorage.setItem(
-    "myLittleWorldNotes",
-    JSON.stringify(notes)
-  );
-
-  displayNotes();
-}
-
-function displayNotes() {
-
-  const container =
-    document.getElementById("noteItems");
-
-  if (notes.length === 0) {
-
-    container.innerHTML =
-      `<div class="empty">
-        Your notes will appear here ♡
-      </div>`;
-
-    return;
-  }
-
-  container.innerHTML = notes.map((note, index) => `
-
-    <article class="item">
-
-      <button class="delete-btn"
-        onclick="deleteNote(${index})">
-        ×
-      </button>
-
-      <div class="item-number">
-        ${String(index + 1).padStart(2, "0")}
+    <div id="journal" class="view">
+      <div class="layout-split">
+        <div class="panel">
+          <h2>Journal Entries</h2>
+          <div class="item-list" id="journal-list"></div>
+        </div>
+        <div class="panel">
+          <h2 id="journal-editor-title">New Entry</h2>
+          <input type="text" id="journal-title-input" placeholder="Heading / Title">
+          <textarea id="journal-body-input" rows="12" placeholder="Write your thoughts..."></textarea>
+          <button onclick="saveJournalEntry()">Save Entry</button>
+        </div>
       </div>
+    </div>
 
-      <h3>${escapeHTML(note.title)}</h3>
-
-      <p>${escapeHTML(note.text)}</p>
-
-      <small>${note.date}</small>
-
-    </article>
-
-  `).join("");
-}
-
-
-/* ================= HOBBIES ================= */
-
-let hobbies =
-  JSON.parse(localStorage.getItem("myLittleWorldHobbies")) || [];
-
-function saveHobby() {
-
-  const name =
-    document.getElementById("hobbyName").value.trim();
-
-  const text =
-    document.getElementById("hobbyText").value.trim();
-
-  if (!name) {
-    alert("Give your hobby a name ♡");
-    return;
-  }
-
-  hobbies.push({
-    name: name,
-    text: text
-  });
-
-  localStorage.setItem(
-    "myLittleWorldHobbies",
-    JSON.stringify(hobbies)
-  );
-
-  document.getElementById("hobbyName").value = "";
-  document.getElementById("hobbyText").value = "";
-
-  document.getElementById("hobbyForm")
-    .classList.remove("show");
-
-  displayHobbies();
-}
-
-function deleteHob
-  function deleteHobby(index) {
-
-  hobbies.splice(index, 1);
-
-  localStorage.setItem(
-    "myLittleWorldHobbies",
-    JSON.stringify(hobbies)
-  );
-
-  displayHobbies();
-}
-
-function displayHobbies() {
-
-  const container =
-    document.getElementById("hobbyItems");
-
-  if (hobbies.length === 0) {
-
-    container.innerHTML =
-      `<div class="empty">
-        Add the things you love doing ♡
-      </div>`;
-
-    return;
-  }
-
-  container.innerHTML = hobbies.map((hobby, index) => `
-
-    <article class="item">
-
-      <button class="delete-btn"
-        onclick="deleteHobby(${index})">
-        ×
-      </button>
-
-      <div class="item-number">
-        ${String(index + 1).padStart(2, "0")}
+    <div id="todo" class="view">
+      <div class="panel" style="max-width: 600px; margin: 0 auto;">
+        <h2>To Do List</h2>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="todo-input" placeholder="Add a new task...">
+          <button onclick="addTodo()" style="height: 40px; margin-top: 8px;">Add</button>
+        </div>
+        <div id="todo-list"></div>
       </div>
-
-      <h3>${escapeHTML(hobby.name)} ♡</h3>
-
-      <p>${escapeHTML(hobby.text)}</p>
-
-    </article>
-
-  `).join("");
-}
-
-
-/* ================= MOOD ================= */
-
-let moods =
-  JSON.parse(localStorage.getItem("myLittleWorldMoods")) || [];
-
-function chooseMood(mood) {
-  document.getElementById("selectedMood").value = mood;
-}
-
-function saveMood() {
-
-  const mood =
-    document.getElementById("selectedMood").value.trim();
-
-  const text =
-    document.getElementById("moodText").value.trim();
-
-  if (!mood) {
-    alert("Choose or write your mood ♡");
-    return;
-  }
-
-  moods.push({
-    mood: mood,
-    text: text,
-    date: new Date().toLocaleDateString()
-  });
-
-  localStorage.setItem(
-    "myLittleWorldMoods",
-    JSON.stringify(moods)
-  );
-
-  document.getElementById("selectedMood").value = "";
-  document.getElementById("moodText").value = "";
-
-  document.getElementById("moodForm")
-    .classList.remove("show");
-
-  displayMoods();
-}
-
-function deleteMood(index) {
-
-  moods.splice(index, 1);
-
-  localStorage.setItem(
-    "myLittleWorldMoods",
-    JSON.stringify(moods)
-  );
-
-  displayMoods();
-}
-
-function displayMoods() {
-
-  const container =
-    document.getElementById("moodItems");
-
-  if (moods.length === 0) {
-
-    container.innerHTML =
-      `<div class="empty">
-        Your mood entries will appear here ♡
-      </div>`;
-
-    return;
-  }
-
-  container.innerHTML = moods.map((entry, index) => `
-
-    <article class="item">
-
-      <button class="delete-btn"
-        onclick="deleteMood(${index})">
-        ×
-      </button>
-
-      <div class="item-number">
-        ${String(index + 1).padStart(2, "0")}
-      </div>
-
-      <h3>${escapeHTML(entry.mood)}</h3>
-
-      <p>${escapeHTML(entry.text)}</p>
-
-      <small>${entry.date}</small>
-
-    </article>
-
-  `).join("");
-}
-
-
-/* ================= BOOKSHELF ================= */
-
-let books =
-  JSON.parse(localStorage.getItem("myLittleWorldBooks")) || [];
-
-function saveBook() {
-
-  const title =
-    document.getElementById("bookTitle").value.trim();
-
-  const author =
-    document.getElementById("bookAuthor").value.trim();
-
-  const thoughts =
-    document.getElementById("bookThoughts").value.trim();
-
-  if (!title) {
-    alert("Give your book a title ♡");
-    return;
-  }
-
-  books.push({
-    title: title,
-    author: author,
-    thoughts: thoughts
-  });
-
-  localStorage.setItem(
-    "myLittleWorldBooks",
-    JSON.stringify(books)
-  );
-
-  document.getElementById("bookTitle").value = "";
-  document.getElementById("bookAuthor").value = "";
-  document.getElementById("bookThoughts").value = "";
-
-  document.getElementById("bookForm")
-    .classList.remove("show");
-
-  displayBooks();
-}
-
-function deleteBook(index) {
-
-  books.splice(index, 1);
-
-  localStorage.setItem(
-    "myLittleWorldBooks",
-    JSON.stringify(books)
-  );
-
-  displayBooks();
-}
-
-function displayBooks() {
-
-  const container =
-    document.getElementById("bookItems");
-
-  if (books.length === 0) {
-
-    container.innerHTML =
-      `<div class="empty">
-        Your bookshelf is waiting for your books ♡
-      </div>`;
-
-    return;
-  }
-
-  container.innerHTML = books.map((book, index) => `
-
-    <article class="item">
-
-      <button class="delete-btn"
-        onclick="deleteBook(${index})">
-        ×
-      </button>
-
-      <div class="item-number">
-        ${String(index + 1).padStart(2, "0")}
-      </div>
-
-      <h3>▥ ${escapeHTML(book.title)}</h3>
-
-      <p>
-        ${book.author ? "by " + escapeHTML(book.author) : ""}
-        ${book.thoughts ? "\n\n" + escapeHTML(book.thoughts) : ""}
-      </p>
-
-    </article>
-
-  `).join("");
-}
-
-
-/* ================= SECURITY ================= */
-
-function escapeHTML(text) {
-
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-
-/* ================= LOAD SAVED DATA ================= */
-
-displayJournals();
-displayTasks();
-displayNotes();
-displayHobbies();
-displayMoods();
-displayBooks();
-
-</script>
-
+    </div>
+
+    <div id="notes" class="view"><div class="panel"><h2>Notes Section</h2><p>Custom notes content here.</p></div></div>
+    <div id="hobbies" class="view"><div class="panel"><h2>Hobbies Section</h2><p>Custom hobbies content here.</p></div></div>
+    <div id="mood" class="view"><div class="panel"><h2>Mood Tracker Section</h2><p>Custom mood content here.</p></div></div>
+    <div id="bookshelf" class="view"><div class="panel"><h2>Bookshelf Section</h2><p>Custom bookshelf content here.</p></div></div>
+
+  </div>
+
+  <script>
+    // Initial State & Data Pre-loading
+    let journalEntries = [
+      { id: 1, title: 'A fresh start', date: '8 Sep 2025', body: 'Today I finally felt a little better.\nIt\'s not a perfect day, but it\'s a start.' },
+      { id: 2, title: 'Overthinking again', date: '6 Sep 2025', body: 'My mind just won\'t stop...' },
+      { id: 3, title: 'Little things', date: '4 Sep 2025', body: 'It\'s the small moments that heal me...' }
+    ];
+
+    let todos = [
+      { id: 1, text: 'Finish biology notes', completed: true },
+      { id: 2, text: 'Watch physics lecture', completed: true },
+      { id: 3, text: 'Complete chemistry MCQs', completed: false },
+      { id: 4, text: 'Edit video', completed: false }
+    ];
+
+    // Navigation Switcher
+    function showView(viewId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      
+      document.getElementById(viewId).classList.add('active');
+      
+      const activeNav = Array.from(document.querySelectorAll('.nav-item'))
+        .find(item => item.textContent.toLowerCase().includes(viewId));
+      if (activeNav) activeNav.classList.add('active');
+    }
+
+    // Render Journal Entries
+    function renderJournal() {
+      const listEl = document.getElementById('journal-list');
+      listEl.innerHTML = '';
+      journalEntries.forEach(entry => {
+        const item = document.createElement('div');
+        item.className = 'list-item';
+        item.onclick = () => loadJournalEntry(entry.id);
+        item.innerHTML = `
+          <h4>${entry.title}</h4>
+          <p>${entry.date}</p>
+        `;
+        listEl.appendChild(item);
+      });
+    }
+
+    function loadJournalEntry(id) {
+      const entry = journalEntries.find(e => e.id === id);
+      if (entry) {
+        document.getElementById('journal-title-input').value = entry.title;
+        document.getElementById('journal-body-input').value = entry.body;
+        document.getElementById('journal-editor-title').textContent = 'Edit Entry';
+      }
+    }
+
+    function saveJournalEntry() {
+      const title = document.getElementById('journal-title-input').value;
+      const body = document.getElementById('journal-body-input').value;
+      if (!title) return;
+
+      const newEntry = {
+        id: Date.now(),
+        title: title,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        body: body
+      };
+
+      journalEntries.unshift(newEntry);
+      renderJournal();
+      
+      document.getElementById('journal-title-input').value = '';
+      document.getElementById('journal-body-input').value = '';
+      document.getElementById('journal-editor-title').textContent = 'New Entry';
+    }
+
+    // Render To Do Items
+    function renderTodos() {
+      const listEl = document.getElementById('todo-list');
+      listEl.innerHTML = '';
+      todos.forEach(todo => {
+        const item = document.createElement('div');
+        item.className = `todo-item ${todo.completed ? 'done' : ''}`;
+        item.innerHTML = `
+          <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${todo.id})">
+          <span>${todo.text}</span>
+        `;
+        listEl.appendChild(item);
+      });
+    }
+
+    function addTodo() {
+      const input = document.getElementById('todo-input');
+      if (!input.value.trim()) return;
+      todos.push({ id: Date.now(), text: input.value, completed: false });
+      input.value = '';
+      renderTodos();
+    }
+
+    function toggleTodo(id) {
+      const todo = todos.find(t => t.id === id);
+      if (todo) todo.completed = !todo.completed;
+      renderTodos();
+    }
+
+    // Initial Load
+    renderJournal();
+    renderTodos();
+  </script>
 </body>
 </html>
