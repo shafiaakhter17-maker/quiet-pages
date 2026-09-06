@@ -1,8 +1,9 @@
 {
   "name": "My Little Notes",
-  "short_name": "My Notes",
+  "short_name": "My Little Notes",
   "description": "A quiet little place for my thoughts, notes and memories.",
-  "start_url": "./",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#050505",
