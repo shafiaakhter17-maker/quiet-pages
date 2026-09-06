@@ -330,4 +330,246 @@
         <div class="empty-state">
           <span>☑</span>
           <h3>Nothing here yet.</h3>
-         
+          <p>Add something you want to get done.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- NOTES -->
+    <section id="notes" class="page">
+
+      <div class="section-header">
+
+        <div>
+          <p class="small-text">random thoughts</p>
+          <h1>Notes.</h1>
+        </div>
+
+      </div>
+
+
+      <div class="writing-form notes-form">
+
+        <input
+          id="noteTitle"
+          type="text"
+          placeholder="Note title..."
+        >
+
+        <textarea
+          id="noteContent"
+          placeholder="Write your note here..."
+        ></textarea>
+
+        <button
+          class="primary-btn"
+          onclick="addNote()">
+          + Save Note
+        </button>
+
+      </div>
+
+
+      <div id="noteList" class="note-list">
+
+        <div class="empty-state">
+          <span>✎</span>
+          <h3>No notes yet.</h3>
+          <p>Your thoughts and ideas will appear here.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- HOBBIES -->
+    <section id="hobbies" class="page">
+
+      <div class="section-header">
+
+        <div>
+          <p class="small-text">things you enjoy</p>
+          <h1>Hobbies.</h1>
+        </div>
+
+      </div>
+
+
+      <div class="hobby-grid">
+
+        <div class="hobby-card">
+          <span>📚</span>
+          <h3>Reading</h3>
+          <p>Books, stories & little adventures.</p>
+        </div>
+
+        <div class="hobby-card">
+          <span>🎧</span>
+          <h3>Music</h3>
+          <p>Songs that match your mood.</p>
+        </div>
+
+        <div class="hobby-card">
+          <span>✎</span>
+          <h3>Writing</h3>
+          <p>Stories, ideas & random thoughts.</p>
+        </div>
+
+        <div class="hobby-card">
+          <span>🎨</span>
+          <h3>Creativity</h3>
+          <p>Make something just because you can.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- MOOD -->
+    <section id="mood" class="page">
+
+      <div class="section-header">
+
+        <div>
+          <p class="small-text">today's feeling</p>
+          <h1>Mood.</h1>
+        </div>
+
+      </div>
+
+
+      <div class="mood-grid">
+
+        <button onclick="setMood('happy')">
+          ☀️
+          <span>Happy</span>
+        </button>
+
+        <button onclick="setMood('calm')">
+          🌿
+          <span>Calm</span>
+        </button>
+
+        <button onclick="setMood('sad')">
+          ☁️
+          <span>Sad</span>
+        </button>
+
+        <button onclick="setMood('tired')">
+          💤
+          <span>Tired</span>
+        </button>
+
+        <button onclick="setMood('excited')">
+          ✨
+          <span>Excited</span>
+        </button>
+
+        <button onclick="setMood('confused')">
+          ☾
+          <span>Confused</span>
+        </button>
+
+      </div>
+
+
+      <div id="moodMessage" class="mood-message">
+        How are you feeling today?
+      </div>
+
+    </section>
+
+
+
+    <!-- BOOKSHELF -->
+    <section id="bookshelf" class="page">
+
+      <div class="section-header">
+
+        <div>
+          <p class="small-text">your little library</p>
+          <h1>Bookshelf.</h1>
+        </div>
+
+      </div>
+
+
+      <div class="writing-form book-form">
+
+        <input
+          id="bookTitle"
+          type="text"
+          placeholder="Book title..."
+        >
+
+        <input
+          id="bookAuthor"
+          type="text"
+          placeholder="Author..."
+        >
+
+        <button
+          class="primary-btn"
+          onclick="addBook()">
+          + Add Book
+        </button>
+
+      </div>
+
+
+      <div id="bookList">
+
+        <div class="empty-state">
+          <span>▥</span>
+          <h3>Your bookshelf is empty.</h3>
+          <p>Add the books you love or want to read.</p>
+        </div>
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+<script src="script.js"></script>
+
+
+<!-- DATE -->
+<script>
+
+  const dateElement =
+    document.getElementById("currentDate");
+
+  if (dateElement) {
+
+    const today = new Date();
+
+    dateElement.textContent =
+      today.toLocaleDateString(
+        "en-US",
+        {
+          weekday: "long",
+          month: "long",
+          day: "numeric"
+        }
+      );
+
+  }
+
+</script>
+
+</body>
+</html>
