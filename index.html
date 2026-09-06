@@ -28,7 +28,7 @@
       min-height: 100vh;
     }
 
-    /* Mobile Header Controls */
+    /* Navigation Header (Mobile) */
     .mobile-header {
       display: none;
       background-color: var(--bg);
@@ -143,14 +143,15 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, transform 0.2s;
     }
 
     .card:hover {
-      border-color: #444;
+      border-color: #555;
+      transform: translateY(-2px);
     }
 
-    /* Split Sections (Journal, Notes, etc.) */
+    /* Split Layout for Sections */
     .layout-split {
       display: flex;
       gap: 20px;
@@ -177,6 +178,7 @@
       border: 1px solid var(--card-border);
       border-radius: 8px;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
 
     .list-item:hover {
@@ -193,8 +195,8 @@
       color: var(--text-muted);
     }
 
-    /* Forms & Inputs */
-    input, textarea {
+    /* Inputs and Controls */
+    input, textarea, select {
       width: 100%;
       background: #181820;
       border: 1px solid var(--card-border);
@@ -229,7 +231,7 @@
       color: var(--text-muted);
     }
 
-    /* Responsive Adjustments for Mobile Screens */
+    /* Mobile Responsive Overrides */
     @media (max-width: 768px) {
       body {
         flex-direction: column;
@@ -266,13 +268,11 @@
 </head>
 <body>
 
-  <!-- Mobile Top Navigation Header -->
   <div class="mobile-header">
     <h2 style="font-family: cursive; font-size: 1.2rem;">My Little Notes ♡</h2>
     <button class="menu-btn" onclick="toggleMenu()" style="width: auto; padding: 0;">☰</button>
   </div>
 
-  <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <div class="brand">
       <h2>My Little Notes ♡</h2>
@@ -291,10 +291,8 @@
     </div>
   </div>
 
-  <!-- Main View Container -->
   <div class="main-content">
 
-    <!-- HOME VIEW -->
     <div id="home" class="view active">
       <div class="greeting">
         <h1>Good Morning ♡</h1>
@@ -310,7 +308,6 @@
       </div>
     </div>
 
-    <!-- JOURNAL VIEW -->
     <div id="journal" class="view">
       <div class="layout-split">
         <div class="panel">
@@ -326,7 +323,6 @@
       </div>
     </div>
 
-    <!-- TO DO LIST VIEW -->
     <div id="todo" class="view">
       <div class="panel">
         <h2>To Do List</h2>
@@ -338,30 +334,106 @@
       </div>
     </div>
 
-    <!-- PLACEHOLDER VIEWS -->
-    <div id="notes" class="view"><div class="panel"><h2>Notes Section</h2><p>Custom notes content here.</p></div></div>
-    <div id="hobbies" class="view"><div class="panel"><h2>Hobbies Section</h2><p>Custom hobbies content here.</p></div></div>
-    <div id="mood" class="view"><div class="panel"><h2>Mood Tracker Section</h2><p>Custom mood content here.</p></div></div>
-    <div id="bookshelf" class="view"><div class="panel"><h2>Bookshelf Section</h2><p>Custom bookshelf content here.</p></div></div>
+    <div id="notes" class="view">
+      <div class="layout-split">
+        <div class="panel">
+          <h2>Saved Notes</h2>
+          <div class="item-list" id="notes-list"></div>
+        </div>
+        <div class="panel">
+          <h2>Create Note</h2>
+          <input type="text" id="note-title-input" placeholder="Note Title">
+          <textarea id="note-body-input" rows="8" placeholder="Write note details..."></textarea>
+          <button onclick="saveNote()">Save Note</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="hobbies" class="view">
+      <div class="layout-split">
+        <div class="panel">
+          <h2>Hobby Tracker</h2>
+          <div class="item-list" id="hobbies-list"></div>
+        </div>
+        <div class="panel">
+          <h2>Log Hobby Activity</h2>
+          <input type="text" id="hobby-title-input" placeholder="Hobby Name (e.g. Sketching)">
+          <textarea id="hobby-body-input" rows="8" placeholder="Details or progress update..."></textarea>
+          <button onclick="saveHobby()">Save Hobby Log</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mood" class="view">
+      <div class="layout-split">
+        <div class="panel">
+          <h2>Mood Logs</h2>
+          <div class="item-list" id="mood-list"></div>
+        </div>
+        <div class="panel">
+          <h2>Log Your Mood</h2>
+          <select id="mood-select">
+            <option value="Happy 😊">Happy 😊</option>
+            <option value="Calm 😌">Calm 😌</option>
+            <option value="Tired 😴">Tired 😴</option>
+            <option value="Anxious 😟">Anxious 😟</option>
+            <option value="Productive ⚡">Productive ⚡</option>
+          </select>
+          <textarea id="mood-body-input" rows="8" placeholder="Why are you feeling this way?"></textarea>
+          <button onclick="saveMood()">Save Mood Entry</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="bookshelf" class="view">
+      <div class="layout-split">
+        <div class="panel">
+          <h2>My Bookshelf</h2>
+          <div class="item-list" id="bookshelf-list"></div>
+        </div>
+        <div class="panel">
+          <h2>Add a Book</h2>
+          <input type="text" id="book-title-input" placeholder="Book Title">
+          <input type="text" id="book-author-input" placeholder="Author">
+          <textarea id="book-body-input" rows="6" placeholder="Notes or Key Thoughts..."></textarea>
+          <button onclick="saveBook()">Save Book</button>
+        </div>
+      </div>
+    </div>
 
   </div>
 
   <script>
+    // Data Storage Arrays
     let journalEntries = [
-      { id: 1, title: 'A fresh start', date: '8 Sep 2025', body: 'Today I finally felt a little better.\nIt\'s not a perfect day, but it\'s a start.' },
-      { id: 2, title: 'Overthinking again', date: '6 Sep 2025', body: 'My mind just won\'t stop...' },
-      { id: 3, title: 'Little things', date: '4 Sep 2025', body: 'It\'s the small moments that heal me...' }
+      { id: 1, title: 'A fresh start', date: '8 Sep 2025', body: 'Today I finally felt a little better.' },
+      { id: 2, title: 'Overthinking again', date: '6 Sep 2025', body: 'My mind just won\'t stop...' }
     ];
 
     let todos = [
       { id: 1, text: 'Finish biology notes', completed: true },
-      { id: 2, text: 'Watch physics lecture', completed: true },
-      { id: 3, text: 'Complete chemistry MCQs', completed: false }
+      { id: 2, text: 'Watch physics lecture', completed: false }
     ];
 
+    let notes = [
+      { id: 1, title: 'Quick Ideas', body: 'Remember to practice coding for 30 minutes daily.' }
+    ];
+
+    let hobbies = [
+      { id: 1, title: 'Photography', body: 'Took some sunset pictures today.' }
+    ];
+
+    let moods = [
+      { id: 1, mood: 'Calm 😌', note: 'Had a peaceful morning with hot tea.' }
+    ];
+
+    let books = [
+      { id: 1, title: 'Atomic Habits', author: 'James Clear', notes: '1% better every day.' }
+    ];
+
+    // Navigation and Mobile Drawer Toggle
     function toggleMenu() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('open');
+      document.getElementById('sidebar').classList.toggle('open');
     }
 
     function showView(viewId) {
@@ -379,61 +451,49 @@
       }
     }
 
-    function renderJournal() {
-      const listEl = document.getElementById('journal-list');
-      listEl.innerHTML = '';
-      journalEntries.forEach(entry => {
-        const item = document.createElement('div');
-        item.className = 'list-item';
-        item.onclick = () => loadJournalEntry(entry.id);
-        item.innerHTML = `
-          <h4>${entry.title}</h4>
-          <p>${entry.date}</p>
-        `;
-        listEl.appendChild(item);
-      });
+    // Helper Date Generator
+    function getDate() {
+      return new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     }
 
-    function loadJournalEntry(id) {
-      const entry = journalEntries.find(e => e.id === id);
-      if (entry) {
-        document.getElementById('journal-title-input').value = entry.title;
-        document.getElementById('journal-body-input').value = entry.body;
-        document.getElementById('journal-editor-title').textContent = 'Edit Entry';
-      }
+    // JOURNAL
+    function renderJournal() {
+      const list = document.getElementById('journal-list');
+      list.innerHTML = '';
+      journalEntries.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.onclick = () => {
+          document.getElementById('journal-title-input').value = entry.title;
+          document.getElementById('journal-body-input').value = entry.body;
+        };
+        div.innerHTML = `<h4>${entry.title}</h4><p>${entry.date}</p>`;
+        list.appendChild(div);
+      });
     }
 
     function saveJournalEntry() {
       const title = document.getElementById('journal-title-input').value;
       const body = document.getElementById('journal-body-input').value;
       if (!title) return;
-
-      const newEntry = {
-        id: Date.now(),
-        title: title,
-        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-        body: body
-      };
-
-      journalEntries.unshift(newEntry);
-      renderJournal();
-      
+      journalEntries.unshift({ id: Date.now(), title, date: getDate(), body });
       document.getElementById('journal-title-input').value = '';
       document.getElementById('journal-body-input').value = '';
-      document.getElementById('journal-editor-title').textContent = 'New Entry';
+      renderJournal();
     }
 
+    // TO-DO
     function renderTodos() {
-      const listEl = document.getElementById('todo-list');
-      listEl.innerHTML = '';
+      const list = document.getElementById('todo-list');
+      list.innerHTML = '';
       todos.forEach(todo => {
-        const item = document.createElement('div');
-        item.className = `todo-item ${todo.completed ? 'done' : ''}`;
-        item.innerHTML = `
-          <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${todo.id})" style="width: auto; margin: 0;">
+        const div = document.createElement('div');
+        div.className = `todo-item ${todo.completed ? 'done' : ''}`;
+        div.innerHTML = `
+          <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${todo.id})" style="width:auto; margin:0;">
           <span>${todo.text}</span>
         `;
-        listEl.appendChild(item);
+        list.appendChild(div);
       });
     }
 
@@ -446,13 +506,119 @@
     }
 
     function toggleTodo(id) {
-      const todo = todos.find(t => t.id === id);
-      if (todo) todo.completed = !todo.completed;
+      const item = todos.find(t => t.id === id);
+      if (item) item.completed = !item.completed;
       renderTodos();
     }
 
+    // NOTES
+    function renderNotes() {
+      const list = document.getElementById('notes-list');
+      list.innerHTML = '';
+      notes.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.onclick = () => {
+          document.getElementById('note-title-input').value = item.title;
+          document.getElementById('note-body-input').value = item.body;
+        };
+        div.innerHTML = `<h4>${item.title}</h4><p>${item.body.substring(0, 30)}...</p>`;
+        list.appendChild(div);
+      });
+    }
+
+    function saveNote() {
+      const title = document.getElementById('note-title-input').value;
+      const body = document.getElementById('note-body-input').value;
+      if (!title) return;
+      notes.unshift({ id: Date.now(), title, body });
+      document.getElementById('note-title-input').value = '';
+      document.getElementById('note-body-input').value = '';
+      renderNotes();
+    }
+
+    // HOBBIES
+    function renderHobbies() {
+      const list = document.getElementById('hobbies-list');
+      list.innerHTML = '';
+      hobbies.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.onclick = () => {
+          document.getElementById('hobby-title-input').value = item.title;
+          document.getElementById('hobby-body-input').value = item.body;
+        };
+        div.innerHTML = `<h4>${item.title}</h4><p>${item.body.substring(0, 30)}...</p>`;
+        list.appendChild(div);
+      });
+    }
+
+    function saveHobby() {
+      const title = document.getElementById('hobby-title-input').value;
+      const body = document.getElementById('hobby-body-input').value;
+      if (!title) return;
+      hobbies.unshift({ id: Date.now(), title, body });
+      document.getElementById('hobby-title-input').value = '';
+      document.getElementById('hobby-body-input').value = '';
+      renderHobbies();
+    }
+
+    // MOOD
+    function renderMoods() {
+      const list = document.getElementById('mood-list');
+      list.innerHTML = '';
+      moods.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `<h4>${item.mood}</h4><p>${item.note}</p>`;
+        list.appendChild(div);
+      });
+    }
+
+    function saveMood() {
+      const mood = document.getElementById('mood-select').value;
+      const note = document.getElementById('mood-body-input').value;
+      moods.unshift({ id: Date.now(), mood, note });
+      document.getElementById('mood-body-input').value = '';
+      renderMoods();
+    }
+
+    // BOOKSHELF
+    function renderBooks() {
+      const list = document.getElementById('bookshelf-list');
+      list.innerHTML = '';
+      books.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.onclick = () => {
+          document.getElementById('book-title-input').value = item.title;
+          document.getElementById('book-author-input').value = item.author;
+          document.getElementById('book-body-input').value = item.notes;
+        };
+        div.innerHTML = `<h4>${item.title}</h4><p>By ${item.author}</p>`;
+        list.appendChild(div);
+      });
+    }
+
+    function saveBook() {
+      const title = document.getElementById('book-title-input').value;
+      const author = document.getElementById('book-author-input').value;
+      const notesText = document.getElementById('book-body-input').value;
+      if (!title) return;
+      books.unshift({ id: Date.now(), title, author, notes: notesText });
+      document.getElementById('book-title-input').value = '';
+      document.getElementById('book-author-input').value = '';
+      document.getElementById('book-body-input').value = '';
+      renderBooks();
+    }
+
+    // Initial Renders
     renderJournal();
     renderTodos();
+    renderNotes();
+    renderHobbies();
+    renderMoods();
+    renderBooks();
   </script>
 </body>
 </html>
