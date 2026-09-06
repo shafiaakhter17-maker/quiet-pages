@@ -3,622 +3,394 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#050505">
+  <meta name="description" content="My Little Notes - a quiet place for your thoughts">
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+
   <title>My Little Notes</title>
-  <style>
-    :root {
-      --bg: #0a0a0c;
-      --card-bg: #111115;
-      --card-border: #22222a;
-      --text: #e0e0e0;
-      --text-muted: #888890;
-      --accent: #ffffff;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      display: flex;
-      min-height: 100vh;
-    }
-
-    /* Navigation Header (Mobile) */
-    .mobile-header {
-      display: none;
-      background-color: var(--bg);
-      padding: 16px;
-      border-bottom: 1px solid var(--card-border);
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .menu-btn {
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    /* Sidebar Navigation */
-    .sidebar {
-      width: 240px;
-      background-color: var(--bg);
-      border-right: 1px solid var(--card-border);
-      display: flex;
-      flex-direction: column;
-      padding: 24px 16px;
-      gap: 20px;
-      flex-shrink: 0;
-    }
-
-    .brand h2 {
-      font-family: cursive, 'Brush Script MT', sans-serif;
-      font-weight: normal;
-      font-size: 1.4rem;
-      text-align: center;
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .nav-item {
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: all 0.2s ease;
-    }
-
-    .nav-item:hover, .nav-item.active {
-      background-color: var(--card-bg);
-      color: var(--text);
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      font-style: italic;
-    }
-
-    /* Main Content Area */
-    .main-content {
-      flex: 1;
-      padding: 24px;
-      width: 100%;
-      overflow-x: hidden;
-    }
-
-    .view {
-      display: none;
-    }
-
-    .view.active {
-      display: block;
-    }
-
-    /* Dashboard Layout */
-    .greeting {
-      margin-bottom: 24px;
-    }
-
-    .greeting h1 {
-      font-family: cursive, 'Brush Script MT', sans-serif;
-      font-size: 2rem;
-      font-weight: normal;
-    }
-
-    .greeting p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .card:hover {
-      border-color: #555;
-      transform: translateY(-2px);
-    }
-
-    /* Split Layout for Sections */
-    .layout-split {
-      display: flex;
-      gap: 20px;
-    }
-
-    .panel {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 20px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .item-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .list-item {
-      padding: 12px;
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .list-item:hover {
-      background-color: #1a1a22;
-    }
-
-    .list-item h4 {
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-    }
-
-    .list-item p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    /* Inputs and Controls */
-    input, textarea, select {
-      width: 100%;
-      background: #181820;
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 8px;
-      margin-bottom: 12px;
-    }
-
-    button {
-      background: var(--text);
-      color: var(--bg);
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      width: 100%;
-    }
-
-    .todo-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .todo-item.done span {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    /* Mobile Responsive Overrides */
-    @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-
-      .mobile-header {
-        display: flex;
-      }
-
-      .sidebar {
-        display: none;
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--card-border);
-      }
-
-      .sidebar.open {
-        display: flex;
-      }
-
-      .main-content {
-        padding: 16px;
-      }
-
-      .layout-split {
-        flex-direction: column;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
 </head>
+
 <body>
 
-  <div class="mobile-header">
-    <h2 style="font-family: cursive; font-size: 1.2rem;">My Little Notes ♡</h2>
-    <button class="menu-btn" onclick="toggleMenu()" style="width: auto; padding: 0;">☰</button>
-  </div>
+<div class="app">
 
-  <div class="sidebar" id="sidebar">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
     <div class="brand">
-      <h2>My Little Notes ♡</h2>
+      <div class="brand-art">☕︎　▱　⌁</div>
+      <div>My Little Notes</div>
+      <span>♡</span>
     </div>
-    <ul class="nav-links">
-      <li class="nav-item active" onclick="showView('home')">Home</li>
-      <li class="nav-item" onclick="showView('journal')">Journal</li>
-      <li class="nav-item" onclick="showView('todo')">To Do List</li>
-      <li class="nav-item" onclick="showView('notes')">Notes</li>
-      <li class="nav-item" onclick="showView('hobbies')">Hobbies</li>
-      <li class="nav-item" onclick="showView('mood')">Mood</li>
-      <li class="nav-item" onclick="showView('bookshelf')">Bookshelf</li>
-    </ul>
-    <div class="sidebar-footer">
-      Small notes for a big life ♡
+
+    <nav>
+
+      <button class="nav-item active" data-page="home">
+        <span>⌂</span> Home
+      </button>
+
+      <button class="nav-item" data-page="journal">
+        <span>▤</span> Journal
+      </button>
+
+      <button class="nav-item" data-page="todo">
+        <span>☑</span> To Do List
+      </button>
+
+      <button class="nav-item" data-page="notes">
+        <span>▤</span> Notes
+      </button>
+
+      <button class="nav-item" data-page="hobbies">
+        <span>☕</span> Hobbies
+      </button>
+
+      <button class="nav-item" data-page="mood">
+        <span>♡</span> Mood
+      </button>
+
+      <button class="nav-item" data-page="bookshelf">
+        <span>▥</span> Bookshelf
+      </button>
+
+    </nav>
+
+    <div class="sidebar-quote">
+      Small notes<br>
+      for a big life ♡
     </div>
-  </div>
 
-  <div class="main-content">
+  </aside>
 
-    <div id="home" class="view active">
-      <div class="greeting">
-        <h1>Good Morning ♡</h1>
-        <p>A little progress each day adds up to big things.</p>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HOME -->
+    <section class="page active" id="home">
+
+      <div class="topbar">
+        <div>
+          <div class="greeting">Good Morning ♡</div>
+          <div class="tagline">
+            A little progress each day adds up to big things.
+          </div>
+        </div>
+
+        <div class="today" id="today"></div>
       </div>
-      <div class="grid">
-        <div class="card" onclick="showView('journal')"><h3>Journal →</h3></div>
-        <div class="card" onclick="showView('todo')"><h3>To Do List →</h3></div>
-        <div class="card" onclick="showView('notes')"><h3>Notes →</h3></div>
-        <div class="card" onclick="showView('hobbies')"><h3>Hobbies →</h3></div>
-        <div class="card" onclick="showView('mood')"><h3>Mood →</h3></div>
-        <div class="card" onclick="showView('bookshelf')"><h3>Bookshelf →</h3></div>
+
+
+      <div class="dashboard">
+
+        <div class="dashboard-card" data-page="journal">
+          <div class="card-art">☕︎ ▱ 📷</div>
+          <div class="card-bottom">
+            <span>Journal</span>
+            <b>→</b>
+          </div>
+        </div>
+
+        <div class="dashboard-card" data-page="todo">
+          <div class="card-art">▤</div>
+          <div class="card-bottom">
+            <span>To Do List</span>
+            <b>→</b>
+          </div>
+        </div>
+
+        <div class="dashboard-card" data-page="notes">
+          <div class="card-art">▱</div>
+          <div class="card-bottom">
+            <span>Notes</span>
+            <b>→</b>
+          </div>
+        </div>
+
+        <div class="dashboard-card" data-page="hobbies">
+          <div class="card-art">▤♡</div>
+          <div class="card-bottom">
+            <span>Hobbies</span>
+            <b>→</b>
+          </div>
+        </div>
+
+        <div class="dashboard-card" data-page="mood">
+          <div class="card-art">♡</div>
+          <div class="card-bottom">
+            <span>Mood</span>
+            <b>→</b>
+          </div>
+        </div>
+
+        <div class="dashboard-card" data-page="bookshelf">
+          <div class="card-art">▥</div>
+          <div class="card-bottom">
+            <span>Bookshelf</span>
+            <b>→</b>
+          </div>
+        </div>
+
       </div>
-    </div>
 
-    <div id="journal" class="view">
-      <div class="layout-split">
-        <div class="panel">
-          <h2>Journal Entries</h2>
-          <div class="item-list" id="journal-list"></div>
+    </section>
+
+
+    <!-- JOURNAL -->
+    <section class="page" id="journal">
+
+      <div class="section-top">
+        <button class="back-button" data-page="home">←</button>
+
+        <div>
+          <h1>Journal</h1>
+          <p>Thoughts · Feelings · My own world</p>
         </div>
-        <div class="panel">
-          <h2 id="journal-editor-title">New Entry</h2>
-          <input type="text" id="journal-title-input" placeholder="Heading / Title">
-          <textarea id="journal-body-input" rows="8" placeholder="Write your thoughts..."></textarea>
-          <button onclick="saveJournalEntry()">Save Entry</button>
-        </div>
+
+        <button class="add-button" data-open="journal-form">+</button>
       </div>
-    </div>
 
-    <div id="todo" class="view">
-      <div class="panel">
-        <h2>To Do List</h2>
-        <div style="display: flex; gap: 8px; flex-direction: column;">
-          <input type="text" id="todo-input" placeholder="Add a new task...">
-          <button onclick="addTodo()">Add Task</button>
+      <div class="form-box" id="journal-form">
+
+        <input id="journal-title" placeholder="Entry title">
+
+        <textarea
+          id="journal-content"
+          placeholder="Write your thoughts here..."
+        ></textarea>
+
+        <div class="form-actions">
+          <button class="save-button" id="save-journal">
+            Save Entry
+          </button>
+
+          <button class="cancel-button" data-close="journal-form">
+            Cancel
+          </button>
         </div>
-        <div id="todo-list" style="margin-top: 15px;"></div>
+
       </div>
-    </div>
 
-    <div id="notes" class="view">
-      <div class="layout-split">
-        <div class="panel">
-          <h2>Saved Notes</h2>
-          <div class="item-list" id="notes-list"></div>
+      <div class="entry-list" id="journal-list"></div>
+
+    </section>
+
+
+    <!-- TO DO -->
+    <section class="page" id="todo">
+
+      <div class="section-top">
+        <button class="back-button" data-page="home">←</button>
+
+        <div>
+          <h1>To Do List</h1>
+          <p>Small steps · Big dreams</p>
         </div>
-        <div class="panel">
-          <h2>Create Note</h2>
-          <input type="text" id="note-title-input" placeholder="Note Title">
-          <textarea id="note-body-input" rows="8" placeholder="Write note details..."></textarea>
-          <button onclick="saveNote()">Save Note</button>
-        </div>
+
+        <button class="add-button" data-open="todo-form">+</button>
       </div>
-    </div>
 
-    <div id="hobbies" class="view">
-      <div class="layout-split">
-        <div class="panel">
-          <h2>Hobby Tracker</h2>
-          <div class="item-list" id="hobbies-list"></div>
+      <div class="form-box" id="todo-form">
+
+        <input id="todo-input" placeholder="What needs to be done?">
+
+        <div class="form-actions">
+          <button class="save-button" id="save-todo">
+            Add Task
+          </button>
+
+          <button class="cancel-button" data-close="todo-form">
+            Cancel
+          </button>
         </div>
-        <div class="panel">
-          <h2>Log Hobby Activity</h2>
-          <input type="text" id="hobby-title-input" placeholder="Hobby Name (e.g. Sketching)">
-          <textarea id="hobby-body-input" rows="8" placeholder="Details or progress update..."></textarea>
-          <button onclick="saveHobby()">Save Hobby Log</button>
-        </div>
+
       </div>
-    </div>
 
-    <div id="mood" class="view">
-      <div class="layout-split">
-        <div class="panel">
-          <h2>Mood Logs</h2>
-          <div class="item-list" id="mood-list"></div>
+      <div id="todo-list"></div>
+
+    </section>
+
+
+    <!-- NOTES -->
+    <section class="page" id="notes">
+
+      <div class="section-top">
+        <button class="back-button" data-page="home">←</button>
+
+        <div>
+          <h1>Notes</h1>
+          <p>Ideas · Reminders · Random thoughts</p>
         </div>
-        <div class="panel">
-          <h2>Log Your Mood</h2>
-          <select id="mood-select">
-            <option value="Happy 😊">Happy 😊</option>
-            <option value="Calm 😌">Calm 😌</option>
-            <option value="Tired 😴">Tired 😴</option>
-            <option value="Anxious 😟">Anxious 😟</option>
-            <option value="Productive ⚡">Productive ⚡</option>
-          </select>
-          <textarea id="mood-body-input" rows="8" placeholder="Why are you feeling this way?"></textarea>
-          <button onclick="saveMood()">Save Mood Entry</button>
-        </div>
+
+        <button class="add-button" data-open="notes-form">+</button>
       </div>
-    </div>
 
-    <div id="bookshelf" class="view">
-      <div class="layout-split">
-        <div class="panel">
-          <h2>My Bookshelf</h2>
-          <div class="item-list" id="bookshelf-list"></div>
+      <div class="form-box" id="notes-form">
+
+        <input id="note-title" placeholder="Note title">
+
+        <textarea
+          id="note-content"
+          placeholder="Write your note..."
+        ></textarea>
+
+        <div class="form-actions">
+          <button class="save-button" id="save-note">
+            Save Note
+          </button>
+
+          <button class="cancel-button" data-close="notes-form">
+            Cancel
+          </button>
         </div>
-        <div class="panel">
-          <h2>Add a Book</h2>
-          <input type="text" id="book-title-input" placeholder="Book Title">
-          <input type="text" id="book-author-input" placeholder="Author">
-          <textarea id="book-body-input" rows="6" placeholder="Notes or Key Thoughts..."></textarea>
-          <button onclick="saveBook()">Save Book</button>
-        </div>
+
       </div>
-    </div>
 
-  </div>
+      <div class="entry-grid" id="notes-list"></div>
 
-  <script>
-    // Data Storage Arrays
-    let journalEntries = [
-      { id: 1, title: 'A fresh start', date: '8 Sep 2025', body: 'Today I finally felt a little better.' },
-      { id: 2, title: 'Overthinking again', date: '6 Sep 2025', body: 'My mind just won\'t stop...' }
-    ];
+    </section>
 
-    let todos = [
-      { id: 1, text: 'Finish biology notes', completed: true },
-      { id: 2, text: 'Watch physics lecture', completed: false }
-    ];
 
-    let notes = [
-      { id: 1, title: 'Quick Ideas', body: 'Remember to practice coding for 30 minutes daily.' }
-    ];
+    <!-- HOBBIES -->
+    <section class="page" id="hobbies">
 
-    let hobbies = [
-      { id: 1, title: 'Photography', body: 'Took some sunset pictures today.' }
-    ];
+      <div class="section-top">
+        <button class="back-button" data-page="home">←</button>
 
-    let moods = [
-      { id: 1, mood: 'Calm 😌', note: 'Had a peaceful morning with hot tea.' }
-    ];
+        <div>
+          <h1>Hobbies</h1>
+          <p>Things I love doing</p>
+        </div>
 
-    let books = [
-      { id: 1, title: 'Atomic Habits', author: 'James Clear', notes: '1% better every day.' }
-    ];
+        <button class="add-button" data-open="hobbies-form">+</button>
+      </div>
 
-    // Navigation and Mobile Drawer Toggle
-    function toggleMenu() {
-      document.getElementById('sidebar').classList.toggle('open');
-    }
+      <div class="form-box" id="hobbies-form">
 
-    function showView(viewId) {
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      
-      document.getElementById(viewId).classList.add('active');
-      
-      const activeNav = Array.from(document.querySelectorAll('.nav-item'))
-        .find(item => item.textContent.toLowerCase().includes(viewId));
-      if (activeNav) activeNav.classList.add('active');
+        <input id="hobby-name" placeholder="Hobby">
 
-      if (window.innerWidth <= 768) {
-        document.getElementById('sidebar').classList.remove('open');
-      }
-    }
+        <textarea
+          id="hobby-content"
+          placeholder="Why do you enjoy it?"
+        ></textarea>
 
-    // Helper Date Generator
-    function getDate() {
-      return new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-    }
+        <div class="form-actions">
+          <button class="save-button" id="save-hobby">
+            Add Hobby
+          </button>
 
-    // JOURNAL
-    function renderJournal() {
-      const list = document.getElementById('journal-list');
-      list.innerHTML = '';
-      journalEntries.forEach(entry => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.onclick = () => {
-          document.getElementById('journal-title-input').value = entry.title;
-          document.getElementById('journal-body-input').value = entry.body;
-        };
-        div.innerHTML = `<h4>${entry.title}</h4><p>${entry.date}</p>`;
-        list.appendChild(div);
-      });
-    }
+          <button class="cancel-button" data-close="hobbies-form">
+            Cancel
+          </button>
+        </div>
 
-    function saveJournalEntry() {
-      const title = document.getElementById('journal-title-input').value;
-      const body = document.getElementById('journal-body-input').value;
-      if (!title) return;
-      journalEntries.unshift({ id: Date.now(), title, date: getDate(), body });
-      document.getElementById('journal-title-input').value = '';
-      document.getElementById('journal-body-input').value = '';
-      renderJournal();
-    }
+      </div>
 
-    // TO-DO
-    function renderTodos() {
-      const list = document.getElementById('todo-list');
-      list.innerHTML = '';
-      todos.forEach(todo => {
-        const div = document.createElement('div');
-        div.className = `todo-item ${todo.completed ? 'done' : ''}`;
-        div.innerHTML = `
-          <input type="checkbox" ${todo.completed ? 'checked' : ''} onchange="toggleTodo(${todo.id})" style="width:auto; margin:0;">
-          <span>${todo.text}</span>
-        `;
-        list.appendChild(div);
-      });
-    }
+      <div class="entry-grid" id="hobbies-list"></div>
 
-    function addTodo() {
-      const input = document.getElementById('todo-input');
-      if (!input.value.trim()) return;
-      todos.push({ id: Date.now(), text: input.value, completed: false });
-      input.value = '';
-      renderTodos();
-    }
+    </section>
 
-    function toggleTodo(id) {
-      const item = todos.find(t => t.id === id);
-      if (item) item.completed = !item.completed;
-      renderTodos();
-    }
 
-    // NOTES
-    function renderNotes() {
-      const list = document.getElementById('notes-list');
-      list.innerHTML = '';
-      notes.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.onclick = () => {
-          document.getElementById('note-title-input').value = item.title;
-          document.getElementById('note-body-input').value = item.body;
-        };
-        div.innerHTML = `<h4>${item.title}</h4><p>${item.body.substring(0, 30)}...</p>`;
-        list.appendChild(div);
-      });
-    }
+    <!-- MOOD -->
+    <section class="page" id="mood">
 
-    function saveNote() {
-      const title = document.getElementById('note-title-input').value;
-      const body = document.getElementById('note-body-input').value;
-      if (!title) return;
-      notes.unshift({ id: Date.now(), title, body });
-      document.getElementById('note-title-input').value = '';
-      document.getElementById('note-body-input').value = '';
-      renderNotes();
-    }
+      <div class="section-top">
+        <button class="back-button" data-page="home">←</button>
 
-    // HOBBIES
-    function renderHobbies() {
-      const list = document.getElementById('hobbies-list');
-      list.innerHTML = '';
-      hobbies.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.onclick = () => {
-          document.getElementById('hobby-title-input').value = item.title;
-          document.getElementById('hobby-body-input').value = item.body;
-        };
-        div.innerHTML = `<h4>${item.title}</h4><p>${item.body.substring(0, 30)}...</p>`;
-        list.appendChild(div);
-      });
-    }
+        <div>
+          <h1>Mood</h1>
+          <p>How am I feeling today?</p>
+        </div>
 
-    function saveHobby() {
-      const title = document.getElementById('hobby-title-input').value;
-      const body = document.getElementById('hobby-body-input').value;
-      if (!title) return;
-      hobbies.unshift({ id: Date.now(), title, body });
-      document.getElementById('hobby-title-input').value = '';
-      document.getElementById('hobby-body-input').value = '';
-      renderHobbies();
-    }
+        <button class="add-button" data-open="mood-form">+</button>
+      </div>
 
-    // MOOD
-    function renderMoods() {
-      const list = document.getElementById('mood-list');
-      list.innerHTML = '';
-      moods.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.innerHTML = `<h4>${item.mood}</h4><p>${item.note}</p>`;
-        list.appendChild(div);
-      });
-    }
+      <div class="form-box" id="mood-form">
 
-    function saveMood() {
-      const mood = document.getElementById('mood-select').value;
-      const note = document.getElementById('mood-body-input').value;
-      moods.unshift({ id: Date.now(), mood, note });
-      document.getElementById('mood-body-input').value = '';
-      renderMoods();
-    }
+        <div class="mood-buttons">
 
-    // BOOKSHELF
-    function renderBooks() {
-      const list = document.getElementById('bookshelf-list');
-      list.innerHTML = '';
-      books.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'list-item';
-        div.onclick = () => {
-          document.getElementById('book-title-input').value = item.title;
-          document.getElementById('book-author-input').value = item.author;
-          document.getElementById('book-body-input').value = item.notes;
-        };
-        div.innerHTML = `<h4>${item.title}</h4><p>By ${item.author}</p>`;
-        list.appendChild(div);
-      });
-    }
+          <button data-mood="Happy">♡</button>
+          <button data-mood="Calm">☾</button>
+          <button data-mood="Excited">✦</button>
+          <button data-mood="Tired">~</button>
+          <button data-mood="Sad">·</button>
 
-    function saveBook() {
-      const title = document.getElementById('book-title-input').value;
-      const author = document.getElementById('book-author-input').value;
-      const notesText = document.getElementById('book-body-input').value;
-      if (!title) return;
-      books.unshift({ id: Date.now(), title, author, notes: notesText });
-      document.getElementById('book-title-input').value = '';
-      document.getElementById('book-author-input').value = '';
-      document.getElementById('book-body-input').value = '';
-      renderBooks();
-    }
+        </div>
 
-    // Initial Renders
-    renderJournal();
-    renderTodos();
-    renderNotes();
-    renderHobbies();
-    renderMoods();
-    renderBooks();
-  </script>
+        <input id="mood-name" placeholder="Mood">
+
+        <textarea
+          id="mood-content"
+          placeholder="Write about your day..."
+        ></textarea>
+
+        <div class="form-actions">
+          <button class="save-button" id="save-mood">
+            Save Mood
+          </button>
+
+          <button class="cancel-button" data-close="mood-form">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+
+      <div class="entry-grid" id="mood-list"></div>
+
+    </section>
+
+
+    <!-- BOOKSHELF -->
+    <section class="page" id="bookshelf">
+
+      <div class="section-top">
+        <button class="back-button" data-page="home">←</button>
+
+        <div>
+          <h1>Bookshelf</h1>
+          <p>Books I love · Books I want to read</p>
+        </div>
+
+        <button class="add-button" data-open="book-form">+</button>
+      </div>
+
+      <div class="form-box" id="book-form">
+
+        <input id="book-title" placeholder="Book title">
+
+        <input id="book-author" placeholder="Author">
+
+        <textarea
+          id="book-content"
+          placeholder="Your thoughts about this book..."
+        ></textarea>
+
+        <div class="form-actions">
+          <button class="save-button" id="save-book">
+            Add Book
+          </button>
+
+          <button class="cancel-button" data-close="book-form">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+
+      <div class="entry-grid" id="books-list"></div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<script src="script.js"></script>
+
 </body>
 </html>
