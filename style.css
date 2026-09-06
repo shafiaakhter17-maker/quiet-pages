@@ -1,0 +1,904 @@
+/* =========================================
+   MY LITTLE NOTES
+   Black / White / Pinterest-style design
+========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Patrick+Hand&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #050505;
+    color: #f4f1e9;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    min-height: 100vh;
+}
+
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+/* =========================================
+   APP
+========================================= */
+
+.app {
+    min-height: 100vh;
+    display: flex;
+    background: #050505;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.sidebar {
+    width: 235px;
+    min-height: 100vh;
+    border-right: 1px solid #333;
+    padding: 28px 18px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #050505;
+    z-index: 10;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.logo-image {
+    font-size: 25px;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+}
+
+.logo-name {
+    font-family: "Patrick Hand", cursive;
+    font-size: 25px;
+    letter-spacing: 1px;
+}
+
+.heart {
+    font-size: 19px;
+    margin-top: 3px;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nav-button {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: #ddd;
+    padding: 11px 14px;
+    text-align: left;
+    border-radius: 9px;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    transition: 0.2s;
+}
+
+.nav-button span {
+    width: 22px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.nav-button:hover,
+.nav-button.active {
+    background: #242424;
+    color: white;
+}
+
+.sidebar-bottom {
+    position: absolute;
+    bottom: 35px;
+    left: 30px;
+    font-family: "Patrick Hand", cursive;
+    font-size: 17px;
+    line-height: 1.5;
+    color: #aaa;
+}
+
+
+/* =========================================
+   MAIN
+========================================= */
+
+.main {
+    margin-left: 235px;
+    width: calc(100% - 235px);
+    min-height: 100vh;
+    padding: 45px 55px;
+}
+
+
+/* =========================================
+   PAGES
+========================================= */
+
+.page {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   HOME HEADER
+========================================= */
+
+.home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 42px;
+}
+
+.home-header h1 {
+    font-family: "Patrick Hand", cursive;
+    font-size: 50px;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.home-header p {
+    color: #aaa;
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.top-date {
+    font-family: "Patrick Hand", cursive;
+    font-size: 16px;
+    color: #ddd;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.sun {
+    font-size: 25px;
+}
+
+
+/* =========================================
+   HOME CONTENT
+========================================= */
+
+.home-layout {
+    display: flex;
+    gap: 40px;
+}
+
+.home-grid {
+    flex: 1;
+    max-width: 850px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 17px;
+}
+
+.home-card {
+    height: 180px;
+    border: 1px solid #3b3b3b;
+    border-radius: 12px;
+    position: relative;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: #080808;
+    transition: 0.25s ease;
+}
+
+.home-card:hover {
+    background: #151515;
+    border-color: #777;
+    transform: translateY(-3px);
+}
+
+.card-icon {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 53px;
+    color: #eee;
+    white-space: nowrap;
+}
+
+.card-decoration {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    font-size: 20px;
+}
+
+.card-name {
+    font-family: "Patrick Hand", cursive;
+    font-size: 23px;
+    letter-spacing: 0.5px;
+}
+
+.card-arrow {
+    position: absolute;
+    right: 22px;
+    bottom: 23px;
+    font-size: 22px;
+}
+
+.side-quote {
+    width: 130px;
+    padding-top: 90px;
+    font-family: "Patrick Hand", cursive;
+    font-size: 22px;
+    line-height: 1.15;
+    color: #cfcfcf;
+    text-align: center;
+}
+
+
+/* =========================================
+   SECTION HEADER
+========================================= */
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.section-title h2 {
+    font-family: "Patrick Hand", cursive;
+    font-size: 38px;
+    font-weight: 400;
+}
+
+.section-title p {
+    color: #999;
+    font-size: 16px;
+}
+
+.back-button {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 28px;
+}
+
+.add-button {
+    width: 43px;
+    height: 43px;
+    border: 1px solid #666;
+    border-radius: 50%;
+    background: transparent;
+    color: white;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.add-button:hover {
+    background: #fff;
+    color: #000;
+}
+
+
+/* =========================================
+   JOURNAL
+========================================= */
+
+.journal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 850px;
+}
+
+.journal-entry {
+    border: 1px solid #292929;
+    border-radius: 10px;
+    padding: 17px 20px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    background: #080808;
+    transition: 0.2s;
+}
+
+.journal-entry:hover {
+    background: #141414;
+    border-color: #555;
+}
+
+.entry-number {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    border-radius: 50%;
+    background: #f0ede5;
+    color: #050505;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.entry-info {
+    flex: 1;
+}
+
+.entry-title {
+    font-size: 21px;
+    font-weight: 600;
+}
+
+.entry-date {
+    color: #888;
+    font-size: 14px;
+    margin-top: 3px;
+}
+
+.entry-preview {
+    color: #999;
+    font-size: 15px;
+    margin-top: 3px;
+}
+
+.entry-arrow {
+    font-size: 22px;
+    color: #bbb;
+}
+
+
+/* =========================================
+   WRITING FORM
+========================================= */
+
+.writing-form {
+    max-width: 850px;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 30px;
+    background: #080808;
+}
+
+.writing-form input,
+.writing-form textarea {
+    width: 100%;
+    background: transparent;
+    color: white;
+    border: none;
+    border-bottom: 1px solid #444;
+    outline: none;
+}
+
+.writing-form input {
+    font-family: "Patrick Hand", cursive;
+    font-size: 30px;
+    padding: 15px 5px;
+    margin-bottom: 20px;
+}
+
+.writing-form textarea {
+    min-height: 350px;
+    resize: vertical;
+    font-family: "Patrick Hand", cursive;
+    font-size: 20px;
+    line-height: 1.7;
+    padding: 10px 5px;
+}
+
+.writing-form input::placeholder,
+.writing-form textarea::placeholder {
+    color: #666;
+}
+
+.back-text {
+    background: transparent;
+    color: #aaa;
+    border: none;
+    font-size: 17px;
+    margin-bottom: 25px;
+}
+
+.save-button,
+.cancel-button,
+.delete-button {
+    padding: 11px 22px;
+    margin-top: 20px;
+    border-radius: 7px;
+    font-size: 16px;
+}
+
+.save-button {
+    background: white;
+    color: black;
+    border: 1px solid white;
+}
+
+.cancel-button {
+    background: transparent;
+    color: white;
+    border: 1px solid #555;
+    margin-left: 8px;
+}
+
+.delete-button {
+    background: transparent;
+    color: #aaa;
+    border: 1px solid #444;
+}
+
+
+/* =========================================
+   JOURNAL READER
+========================================= */
+
+.journal-reader {
+    max-width: 850px;
+    border: 1px solid #292929;
+    border-radius: 12px;
+    padding: 35px;
+    background: #080808;
+}
+
+.reader-number {
+    width: 43px;
+    height: 43px;
+    background: #eee;
+    color: #000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 19px;
+    margin-bottom: 18px;
+}
+
+.journal-reader h1 {
+    font-family: "Patrick Hand", cursive;
+    font-size: 37px;
+    font-weight: 400;
+}
+
+.reader-date {
+    color: #777;
+    margin: 5px 0 25px;
+}
+
+.reader-content {
+    border-top: 1px solid #333;
+    padding-top: 25px;
+    white-space: pre-wrap;
+    font-family: "Patrick Hand", cursive;
+    font-size: 21px;
+    line-height: 1.8;
+    color: #ddd;
+}
+
+
+/* =========================================
+   TODO
+========================================= */
+
+.task-input {
+    display: flex;
+    max-width: 850px;
+    border-bottom: 1px solid #444;
+    margin-bottom: 25px;
+}
+
+.task-input input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px;
+    font-size: 18px;
+}
+
+.task-input button {
+    background: transparent;
+    color: white;
+    border: none;
+    font-size: 28px;
+}
+
+.task {
+    max-width: 850px;
+    padding: 15px 5px;
+    border-bottom: 1px solid #292929;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    font-size: 18px;
+}
+
+.task input {
+    width: 19px;
+    height: 19px;
+    accent-color: white;
+}
+
+.task.done span {
+    text-decoration: line-through;
+    color: #666;
+}
+
+
+/* =========================================
+   NOTES
+========================================= */
+
+.note-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    gap: 15px;
+    max-width: 850px;
+}
+
+.note-card {
+    border: 1px solid #303030;
+    border-radius: 10px;
+    padding: 25px;
+    min-height: 150px;
+    background: #090909;
+}
+
+.note-card h3 {
+    font-family: "Patrick Hand", cursive;
+    font-size: 25px;
+    font-weight: 400;
+}
+
+.note-card p {
+    margin-top: 12px;
+    color: #aaa;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   HOBBIES
+========================================= */
+
+.hobby-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    max-width: 850px;
+}
+
+.hobby-card {
+    height: 160px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Patrick Hand", cursive;
+    font-size: 23px;
+    background: #090909;
+}
+
+.hobby-card div {
+    font-size: 43px;
+    margin-bottom: 10px;
+}
+
+
+/* =========================================
+   MOOD
+========================================= */
+
+.mood-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    max-width: 850px;
+}
+
+.mood-grid button {
+    min-height: 150px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #090909;
+    color: white;
+    font-family: "Patrick Hand", cursive;
+    font-size: 21px;
+}
+
+.mood-grid button:hover {
+    background: #181818;
+}
+
+.mood-grid span {
+    display: block;
+    font-size: 45px;
+    margin-bottom: 12px;
+}
+
+#moodResult {
+    margin-top: 30px;
+    font-family: "Patrick Hand", cursive;
+    font-size: 25px;
+}
+
+
+/* =========================================
+   BOOKSHELF
+========================================= */
+
+#bookList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    max-width: 850px;
+}
+
+.book-card {
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 25px;
+    min-height: 170px;
+    background: #090909;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.book-icon {
+    font-size: 45px;
+    margin-bottom: auto;
+}
+
+.book-card h3 {
+    font-family: "Patrick Hand", cursive;
+    font-size: 23px;
+}
+
+.book-card p {
+    color: #888;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.empty-state {
+    max-width: 600px;
+    padding: 70px 20px;
+    text-align: center;
+    color: #666;
+}
+
+.empty-state .empty-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.empty-state h3 {
+    font-family: "Patrick Hand", cursive;
+    font-size: 25px;
+    color: #aaa;
+    font-weight: 400;
+}
+
+.empty-state p {
+    margin-top: 5px;
+}
+
+
+/* =========================================
+   HIDDEN
+========================================= */
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 850px) {
+
+    .sidebar {
+        width: 75px;
+        padding: 20px 10px;
+    }
+
+    .logo-name,
+    .sidebar .heart,
+    .sidebar-bottom {
+        display: none;
+    }
+
+    .logo-image {
+        font-size: 18px;
+    }
+
+    .nav-button {
+        justify-content: center;
+        padding: 12px 5px;
+    }
+
+    .nav-button span {
+        font-size: 22px;
+    }
+
+    .nav-button {
+        font-size: 0;
+    }
+
+    .main {
+        margin-left: 75px;
+        width: calc(100% - 75px);
+        padding: 28px 20px;
+    }
+
+    .home-header h1 {
+        font-size: 39px;
+    }
+
+    .home-header p {
+        font-size: 15px;
+    }
+
+    .top-date {
+        font-size: 13px;
+    }
+
+    .home-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .side-quote {
+        display: none;
+    }
+
+    .note-list {
+        grid-template-columns: 1fr;
+    }
+
+    .hobby-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mood-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #bookList {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* =========================================
+   SMALL PHONE
+========================================= */
+
+@media (max-width: 500px) {
+
+    .main {
+        padding: 22px 14px;
+    }
+
+    .home-header {
+        margin-bottom: 30px;
+    }
+
+    .home-header h1 {
+        font-size: 34px;
+    }
+
+    .home-header p {
+        font-size: 14px;
+    }
+
+    .top-date {
+        display: none;
+    }
+
+    .home-grid {
+        gap: 10px;
+    }
+
+    .home-card {
+        height: 155px;
+        padding: 18px;
+    }
+
+    .card-icon {
+        font-size: 40px;
+        top: 27px;
+    }
+
+    .card-name {
+        font-size: 20px;
+    }
+
+    .card-arrow {
+        right: 15px;
+        bottom: 16px;
+    }
+
+    .section-title h2 {
+        font-size: 32px;
+    }
+
+    .section-title p {
+        font-size: 13px;
+    }
+
+    .writing-form,
+    .journal-reader {
+        padding: 20px;
+    }
+
+    #bookList {
+        grid-template-columns: 1fr;
+    }
+
+    .hobby-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+      }
