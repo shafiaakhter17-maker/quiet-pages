@@ -3,599 +3,435 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiet Pages</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  <title>My Little Notes</title>
 
-    body {
-      margin: 0;
-      background: #f4f1eb;
-      color: #171717;
-      font-family: Georgia, "Times New Roman", serif;
-    }
-
-    .app {
-      max-width: 430px;
-      min-height: 100vh;
-      margin: auto;
-      padding: 28px 20px;
-      background: #f4f1eb;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-
-    .logo {
-      font-size: 25px;
-      font-weight: bold;
-      letter-spacing: -1px;
-    }
-
-    .subtitle {
-      font-size: 12px;
-      color: #777;
-      margin-top: 4px;
-    }
-
-    .moon {
-      font-size: 25px;
-    }
-
-    .section-title {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      margin: 25px 0 14px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 13px;
-    }
-
-    .card {
-      position: relative;
-      min-height: 135px;
-      padding: 18px;
-      background: #ebe7df;
-      border: 1px solid #c9c4bb;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: 0.2s;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      transform: translateY(-3px);
-      background: #e4dfd6;
-    }
-
-    .icon {
-      font-size: 35px;
-      margin-bottom: 18px;
-    }
-
-    .card h3 {
-      margin: 0;
-      font-size: 17px;
-    }
-
-    .card p {
-      margin: 5px 0 0;
-      color: #777;
-      font-size: 11px;
-    }
-
-    .doodle {
-      position: absolute;
-      right: 10px;
-      top: 8px;
-      font-size: 18px;
-      transform: rotate(12deg);
-    }
-
-    .screen {
-      display: none;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    .back {
-      border: none;
-      background: none;
-      font-size: 15px;
-      cursor: pointer;
-      margin-bottom: 25px;
-      padding: 0;
-    }
-
-    .screen h1 {
-      font-size: 30px;
-      margin: 0 0 7px;
-    }
-
-    .screen-intro {
-      color: #777;
-      font-size: 13px;
-      margin-bottom: 25px;
-    }
-
-    .entry {
-      background: #ebe7df;
-      border: 1px solid #c9c4bb;
-      padding: 17px;
-      margin-bottom: 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .entry-number {
-      font-size: 12px;
-      color: #777;
-      margin-bottom: 7px;
-    }
-
-    .entry-title {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .entry-preview {
-      font-size: 12px;
-      color: #666;
-      margin-top: 7px;
-    }
-
-    .full-entry {
-      display: none;
-      background: #ebe7df;
-      border: 1px solid #c9c4bb;
-      padding: 22px;
-      line-height: 1.8;
-      font-size: 15px;
-    }
-
-    .full-entry.active {
-      display: block;
-    }
-
-    .todo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 15px;
-      background: #ebe7df;
-      border: 1px solid #c9c4bb;
-      margin-bottom: 10px;
-      border-radius: 4px;
-    }
-
-    .todo input {
-      width: 18px;
-      height: 18px;
-      accent-color: #222;
-    }
-
-    .todo.done span {
-      text-decoration: line-through;
-      color: #888;
-    }
-
-    textarea,
-    input[type="text"] {
-      width: 100%;
-      border: 1px solid #c9c4bb;
-      background: #ebe7df;
-      padding: 15px;
-      font-family: inherit;
-      border-radius: 4px;
-      outline: none;
-      margin-bottom: 12px;
-    }
-
-    textarea {
-      min-height: 180px;
-      resize: vertical;
-    }
-
-    button.add {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #222;
-      background: #222;
-      color: white;
-      border-radius: 4px;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    footer {
-      text-align: center;
-      color: #888;
-      font-size: 11px;
-      margin-top: 35px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="app">
 
-  <!-- HOME -->
-  <div id="home" class="screen active">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
 
-    <header>
-      <div>
-        <div class="logo">quiet pages</div>
-        <div class="subtitle">a little place for your thoughts ♡</div>
-      </div>
-      <div class="moon">☾</div>
-    </header>
-
-    <div class="section-title">my little world</div>
-
-    <div class="grid">
-
-      <div class="card" onclick="openScreen('journal')">
-        <div class="doodle">✦</div>
-        <div class="icon">♧</div>
-        <h3>Journal</h3>
-        <p>thoughts & memories</p>
-      </div>
-
-      <div class="card" onclick="openScreen('todo')">
-        <div class="doodle">✓</div>
-        <div class="icon">☑</div>
-        <h3>To-do list</h3>
-        <p>little things to do</p>
-      </div>
-
-      <div class="card" onclick="openScreen('notes')">
-        <div class="doodle">✎</div>
-        <div class="icon">▤</div>
-        <h3>Notes</h3>
-        <p>random thoughts</p>
-      </div>
-
-      <div class="card" onclick="openScreen('books')">
-        <div class="doodle">♡</div>
-        <div class="icon">▥</div>
-        <h3>Bookshelf</h3>
-        <p>books I love</p>
-      </div>
-
-      <div class="card" onclick="openScreen('hobbies')">
-        <div class="doodle">✿</div>
-        <div class="icon">☼</div>
-        <h3>Hobbies</h3>
-        <p>things I enjoy</p>
-      </div>
-
-      <div class="card" onclick="openScreen('mood')">
-        <div class="doodle">☁</div>
-        <div class="icon">☾</div>
-        <h3>Mood</h3>
-        <p>how I feel today</p>
-      </div>
-
+    <div class="logo">
+      <div class="logo-doodle">☕  ▱  📷</div>
+      <h2>My Little Notes</h2>
+      <span>♡</span>
     </div>
 
-    <footer>
-      made for quiet moments · ♡
-    </footer>
-  </div>
+    <nav>
 
+      <button onclick="showPage('home')" class="active">
+        <span>⌂</span> Home
+      </button>
 
-  <!-- JOURNAL -->
-  <div id="journal" class="screen">
+      <button onclick="showPage('journal')">
+        <span>▤</span> Journal
+      </button>
 
-    <button class="back" onclick="goHome()">← back</button>
+      <button onclick="showPage('todo')">
+        <span>☑</span> To Do List
+      </button>
 
-    <h1>Journal</h1>
-    <div class="screen-intro">
-      little pieces of my life, kept here.
+      <button onclick="showPage('notes')">
+        <span>▧</span> Notes
+      </button>
+
+      <button onclick="showPage('hobbies')">
+        <span>☕</span> Hobbies
+      </button>
+
+      <button onclick="showPage('mood')">
+        <span>♡</span> Mood
+      </button>
+
+      <button onclick="showPage('books')">
+        <span>▥</span> Bookshelf
+      </button>
+
+    </nav>
+
+    <div class="sidebar-quote">
+      Small notes<br>
+      for a big life ♡
     </div>
 
-    <div class="entry" onclick="showEntry(1)">
-      <div class="entry-number">01</div>
-      <div class="entry-title">A quiet afternoon</div>
-      <div class="entry-preview">Today felt strangely peaceful...</div>
-    </div>
-
-    <div class="entry" onclick="showEntry(2)">
-      <div class="entry-number">02</div>
-      <div class="entry-title">Things I want to remember</div>
-      <div class="entry-preview">Some little moments are worth keeping...</div>
-    </div>
-
-    <div class="entry" onclick="showEntry(3)">
-      <div class="entry-number">03</div>
-      <div class="entry-title">A thought</div>
-      <div class="entry-preview">Maybe I don't have to figure everything out...</div>
-    </div>
-
-    <div id="entry1" class="full-entry">
-      <b>A quiet afternoon</b><br><br>
-      Today felt strangely peaceful. I sat down for a while,
-      listened to my thoughts and didn't feel the need to rush
-      anywhere. Sometimes the smallest moments become the ones
-      I remember most.
-    </div>
-
-    <div id="entry2" class="full-entry">
-      <b>Things I want to remember</b><br><br>
-      The little things matter. A good cup of tea, a page of a
-      favourite book, sunlight coming through the window and
-      having a moment completely to myself.
-    </div>
-
-    <div id="entry3" class="full-entry">
-      <b>A thought</b><br><br>
-      Maybe I don't have to figure everything out today.
-      Maybe it is okay to simply take things one step at a time.
-    </div>
-
-  </div>
+  </aside>
 
 
-  <!-- TODO -->
-  <div id="todo" class="screen">
+  <!-- MAIN -->
+  <main class="main">
 
-    <button class="back" onclick="goHome()">← back</button>
+    <!-- HOME -->
+    <section id="home" class="page active">
 
-    <h1>To-do list</h1>
-    <div class="screen-intro">small steps count too.</div>
+      <header class="home-header">
 
-    <div class="todo">
-      <input type="checkbox" onchange="toggleTodo(this)">
-      <span>Study biology</span>
-    </div>
+        <div>
+          <h1>Good Morning ♡</h1>
+          <p>A little progress each day adds up to big things.</p>
+        </div>
 
-    <div class="todo">
-      <input type="checkbox" onchange="toggleTodo(this)">
-      <span>Read a few pages</span>
-    </div>
+        <div class="date" id="date"></div>
 
-    <div class="todo">
-      <input type="checkbox" onchange="toggleTodo(this)">
-      <span>Organise my notes</span>
-    </div>
-
-    <input id="newTask" type="text" placeholder="write a new task...">
-    <button class="add" onclick="addTask()">+ add task</button>
-
-  </div>
+      </header>
 
 
-  <!-- NOTES -->
-  <div id="notes" class="screen">
+      <div class="home-grid">
 
-    <button class="back" onclick="goHome()">← back</button>
+        <div class="home-card" onclick="showPage('journal')">
+          <span class="doodle">✦</span>
+          <div class="big-icon">☕</div>
+          <h3>Journal</h3>
+          <span class="arrow">→</span>
+        </div>
 
-    <h1>Notes</h1>
-    <div class="screen-intro">anything worth remembering.</div>
+        <div class="home-card" onclick="showPage('todo')">
+          <span class="doodle">✓</span>
+          <div class="big-icon">☑</div>
+          <h3>To Do List</h3>
+          <span class="arrow">→</span>
+        </div>
 
-    <textarea id="noteText" placeholder="write something..."></textarea>
-    <button class="add" onclick="saveNote()">save note</button>
+        <div class="home-card" onclick="showPage('notes')">
+          <span class="doodle">✧</span>
+          <div class="big-icon">▱</div>
+          <h3>Notes</h3>
+          <span class="arrow">→</span>
+        </div>
 
-    <div id="savedNotes" style="margin-top:20px;"></div>
+        <div class="home-card" onclick="showPage('hobbies')">
+          <span class="doodle">♡</span>
+          <div class="big-icon">▧</div>
+          <h3>Hobbies</h3>
+          <span class="arrow">→</span>
+        </div>
 
-  </div>
+        <div class="home-card" onclick="showPage('mood')">
+          <span class="doodle">✿</span>
+          <div class="big-icon">♡</div>
+          <h3>Mood</h3>
+          <span class="arrow">→</span>
+        </div>
 
+        <div class="home-card" onclick="showPage('books')">
+          <span class="doodle">✦</span>
+          <div class="big-icon">▤</div>
+          <h3>Bookshelf</h3>
+          <span class="arrow">→</span>
+        </div>
 
-  <!-- BOOKS -->
-  <div id="books" class="screen">
-
-    <button class="back" onclick="goHome()">← back</button>
-
-    <h1>Bookshelf</h1>
-    <div class="screen-intro">stories waiting to be read.</div>
-
-    <div class="entry">
-      <div class="entry-number">01</div>
-      <div class="entry-title">Currently reading</div>
-      <div class="entry-preview">Your favourite book goes here.</div>
-    </div>
-
-    <div class="entry">
-      <div class="entry-number">02</div>
-      <div class="entry-title">Want to read</div>
-      <div class="entry-preview">Add books you want to discover.</div>
-    </div>
-
-  </div>
-
-
-  <!-- HOBBIES -->
-  <div id="hobbies" class="screen">
-
-    <button class="back" onclick="goHome()">← back</button>
-
-    <h1>Hobbies</h1>
-    <div class="screen-intro">things that make time disappear.</div>
-
-    <div class="grid">
-      <div class="card">
-        <div class="icon">✎</div>
-        <h3>Drawing</h3>
       </div>
 
-      <div class="card">
-        <div class="icon">♫</div>
-        <h3>Music</h3>
+      <div class="home-quote">
+        Better notes<br>
+        Calmer mind ♡
       </div>
 
-      <div class="card">
-        <div class="icon">▤</div>
-        <h3>Reading</h3>
+    </section>
+
+
+    <!-- JOURNAL -->
+    <section id="journal" class="page">
+
+      <div class="section-header">
+
+        <div class="title-area">
+          <button onclick="showPage('home')" class="back">←</button>
+
+          <div>
+            <h2>Journal</h2>
+            <p>Thoughts · Feelings · My own world</p>
+          </div>
+        </div>
+
+        <button class="add" onclick="openJournalForm()">+</button>
+
       </div>
 
-      <div class="card">
-        <div class="icon">✿</div>
-        <h3>Other</h3>
-      </div>
-    </div>
 
-  </div>
+      <!-- EMPTY / ENTRIES -->
+      <div id="journalList"></div>
 
 
-  <!-- MOOD -->
-  <div id="mood" class="screen">
+      <!-- NEW JOURNAL FORM -->
+      <div id="journalForm" class="form hidden">
 
-    <button class="back" onclick="goHome()">← back</button>
+        <input
+          id="journalTitle"
+          type="text"
+          placeholder="Give your entry a headline..."
+        >
 
-    <h1>Mood</h1>
-    <div class="screen-intro">how does today feel?</div>
+        <textarea
+          id="journalContent"
+          placeholder="Write your thoughts here..."
+        ></textarea>
 
-    <div class="grid">
+        <button class="save" onclick="saveJournal()">
+          Save Entry
+        </button>
 
-      <div class="card" onclick="selectMood('happy')">
-        <div class="icon">☼</div>
-        <h3>Happy</h3>
-      </div>
+        <button class="cancel" onclick="closeJournalForm()">
+          Cancel
+        </button>
 
-      <div class="card" onclick="selectMood('calm')">
-        <div class="icon">☁</div>
-        <h3>Calm</h3>
-      </div>
-
-      <div class="card" onclick="selectMood('tired')">
-        <div class="icon">☾</div>
-        <h3>Tired</h3>
       </div>
 
-      <div class="card" onclick="selectMood('sad')">
-        <div class="icon">♡</div>
-        <h3>Low</h3>
+
+      <!-- FULL JOURNAL -->
+      <div id="journalReader" class="reader hidden">
+
+        <button class="back-text" onclick="closeJournalReader()">
+          ← Back to Journal
+        </button>
+
+        <div id="readerNumber" class="reader-number"></div>
+
+        <h1 id="readerTitle"></h1>
+
+        <div id="readerDate" class="reader-date"></div>
+
+        <div id="readerContent" class="reader-content"></div>
+
+        <button class="delete" onclick="deleteJournal()">
+          Delete Entry
+        </button>
+
       </div>
 
-    </div>
+    </section>
 
-    <p id="moodMessage" style="text-align:center;margin-top:25px;"></p>
 
-  </div>
+    <!-- TO DO -->
+    <section id="todo" class="page">
+
+      <div class="section-header">
+
+        <div class="title-area">
+          <button onclick="showPage('home')" class="back">←</button>
+
+          <div>
+            <h2>To Do List</h2>
+            <p>Small steps · Big dreams</p>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="task-input">
+
+        <input
+          id="taskInput"
+          type="text"
+          placeholder="Add something to do..."
+        >
+
+        <button onclick="addTask()">+</button>
+
+      </div>
+
+      <div id="taskList"></div>
+
+    </section>
+
+
+    <!-- NOTES -->
+    <section id="notes" class="page">
+
+      <div class="section-header">
+
+        <div class="title-area">
+          <button onclick="showPage('home')" class="back">←</button>
+
+          <div>
+            <h2>Notes</h2>
+            <p>Ideas · Reminders · Random thoughts</p>
+          </div>
+        </div>
+
+        <button class="add" onclick="openNoteForm()">+</button>
+
+      </div>
+
+
+      <div id="noteList" class="note-grid"></div>
+
+
+      <div id="noteForm" class="form hidden">
+
+        <input
+          id="noteTitle"
+          type="text"
+          placeholder="Note headline..."
+        >
+
+        <textarea
+          id="noteContent"
+          placeholder="Write your note..."
+        ></textarea>
+
+        <button class="save" onclick="saveNote()">
+          Save Note
+        </button>
+
+        <button class="cancel" onclick="closeNoteForm()">
+          Cancel
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- HOBBIES -->
+    <section id="hobbies" class="page">
+
+      <div class="section-header">
+
+        <div class="title-area">
+          <button onclick="showPage('home')" class="back">←</button>
+
+          <div>
+            <h2>Hobbies</h2>
+            <p>Things that make time disappear</p>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="home-grid">
+
+        <div class="home-card">
+          <div class="big-icon">✎</div>
+          <h3>Drawing</h3>
+        </div>
+
+        <div class="home-card">
+          <div class="big-icon">♫</div>
+          <h3>Music</h3>
+        </div>
+
+        <div class="home-card">
+          <div class="big-icon">▤</div>
+          <h3>Reading</h3>
+        </div>
+
+        <div class="home-card">
+          <div class="big-icon">📷</div>
+          <h3>Photography</h3>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- MOOD -->
+    <section id="mood" class="page">
+
+      <div class="section-header">
+
+        <div class="title-area">
+          <button onclick="showPage('home')" class="back">←</button>
+
+          <div>
+            <h2>Mood</h2>
+            <p>How does today feel?</p>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="moods">
+
+        <button onclick="chooseMood('peaceful ☁')">
+          <span>☁</span>
+          Peaceful
+        </button>
+
+        <button onclick="chooseMood('happy ☼')">
+          <span>☼</span>
+          Happy
+        </button>
+
+        <button onclick="chooseMood('tired ☾')">
+          <span>☾</span>
+          Tired
+        </button>
+
+        <button onclick="chooseMood('thoughtful ♡')">
+          <span>♡</span>
+          Thoughtful
+        </button>
+
+      </div>
+
+      <div id="moodResult"></div>
+
+    </section>
+
+
+    <!-- BOOKSHELF -->
+    <section id="books" class="page">
+
+      <div class="section-header">
+
+        <div class="title-area">
+          <button onclick="showPage('home')" class="back">←</button>
+
+          <div>
+            <h2>Bookshelf</h2>
+            <p>Stories waiting to be discovered</p>
+          </div>
+        </div>
+
+        <button class="add" onclick="openBookForm()">+</button>
+
+      </div>
+
+
+      <div id="bookList"></div>
+
+
+      <div id="bookForm" class="form hidden">
+
+        <input
+          id="bookTitle"
+          type="text"
+          placeholder="Book title..."
+        >
+
+        <input
+          id="bookAuthor"
+          type="text"
+          placeholder="Author..."
+        >
+
+        <button class="save" onclick="saveBook()">
+          Add Book
+        </button>
+
+        <button class="cancel" onclick="closeBookForm()">
+          Cancel
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
 
 </div>
 
 
-<script>
-
-  function openScreen(id) {
-
-    document.querySelectorAll(".screen").forEach(screen => {
-      screen.classList.remove("active");
-    });
-
-    document.getElementById(id).classList.add("active");
-
-    window.scrollTo(0, 0);
-  }
-
-
-  function goHome() {
-
-    document.querySelectorAll(".screen").forEach(screen => {
-      screen.classList.remove("active");
-    });
-
-    document.getElementById("home").classList.add("active");
-
-    document.querySelectorAll(".full-entry").forEach(entry => {
-      entry.classList.remove("active");
-    });
-  }
-
-
-  function showEntry(number) {
-
-    document.querySelectorAll(".full-entry").forEach(entry => {
-      entry.classList.remove("active");
-    });
-
-    document.getElementById("entry" + number).classList.add("active");
-
-    document.getElementById("entry" + number).scrollIntoView({
-      behavior: "smooth"
-    });
-  }
-
-
-  function toggleTodo(box) {
-
-    box.parentElement.classList.toggle("done", box.checked);
-  }
-
-
-  function addTask() {
-
-    const input = document.getElementById("newTask");
-
-    if (input.value.trim() === "") return;
-
-    const todo = document.createElement("div");
-
-    todo.className = "todo";
-
-    todo.innerHTML = `
-      <input type="checkbox" onchange="toggleTodo(this)">
-      <span>${input.value}</span>
-    `;
-
-    input.parentElement.insertBefore(
-      todo,
-      input
-    );
-
-    input.value = "";
-  }
-
-
-  function saveNote() {
-
-    const text = document.getElementById("noteText").value.trim();
-
-    if (text === "") return;
-
-    const note = document.createElement("div");
-
-    note.className = "entry";
-
-    note.innerHTML = `
-      <div class="entry-number">✎</div>
-      <div class="entry-preview">${text}</div>
-    `;
-
-    document.getElementById("savedNotes").prepend(note);
-
-    document.getElementById("noteText").value = "";
-  }
-
-
-  function selectMood(mood) {
-
-    const messages = {
-      happy: "A little sunshine today ☼",
-      calm: "Take your time. There is no rush ☁",
-      tired: "Rest is allowed too ☾",
-      sad: "Be gentle with yourself ♡"
-    };
-
-    document.getElementById("moodMessage").textContent =
-      messages[mood];
-  }
-
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
