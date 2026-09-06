@@ -1,120 +1,128 @@
-/* =====================================
-   MY LITTLE NOTES — JAVASCRIPT
-   ===================================== */
+/* =========================
+   MY LITTLE NOTES
+   ========================= */
 
 
-/* ---------- PAGE NAVIGATION ---------- */
+/* ---------- NAVIGATION ---------- */
 
-function showPage(pageName) {
+const pages = document.querySelectorAll(".page");
+const navItems = document.querySelectorAll(".nav-item");
+const pageButtons = document.querySelectorAll("[data-page]");
 
-  const pages = document.querySelectorAll(".page");
 
-  pages.forEach(function(page) {
+function openPage(pageName) {
+
+  pages.forEach(page => {
     page.classList.remove("active");
   });
 
-  const selectedPage = document.getElementById(pageName);
+  const selected = document.getElementById(pageName);
 
-  if (selectedPage) {
-    selectedPage.classList.add("active");
+  if (selected) {
+    selected.classList.add("active");
   }
 
-  window.scrollTo(0, 0);
+  navItems.forEach(item => {
+    item.classList.toggle(
+      "active",
+      item.dataset.page === pageName
+    );
+  });
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
+
+
+pageButtons.forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const page = button.dataset.page;
+
+    if (page) {
+      openPage(page);
+    }
+
+  });
+
+});
+
+
+/* ---------- DASHBOARD CARDS ---------- */
+
+document.querySelectorAll(".dashboard-card").forEach(card => {
+
+  card.addEventListener("click", () => {
+
+    openPage(card.dataset.page);
+
+  });
+
+});
+
+
+/* ---------- DATE ---------- */
+
+const today = document.getElementById("today");
+
+today.textContent =
+  new Date().toLocaleDateString("en-US", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric"
+  });
+
+
+/* ---------- FORMS ---------- */
+
+document.querySelectorAll("[data-open]").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const id = button.dataset.open;
+
+    document.getElementById(id).classList.add("open");
+
+  });
+
+});
+
+
+document.querySelectorAll("[data-close]").forEach(button => {
+
+  button.addEventListener("click", () => {
+
+    const id = button.dataset.close;
+
+    document.getElementById(id).classList.remove("open");
+
+  });
+
+});
 
 
 /* ---------- JOURNAL ---------- */
 
-function openJournalWriter() {
-
-  const form = document.getElementById("journalForm");
-  const reader = document.getElementById("journalReader");
-
-  if (reader) {
-    reader.style.display = "none";
-  }
-
-  if (form) {
-    form.style.display = "block";
-  }
-
-  const title = document.getElementById("journalTitle");
-
-  if (title) {
-    title.focus();
-  }
-}
+let journals =
+  JSON.parse(
+    localStorage.getItem("myLittleNotes_journal")
+  ) || [];
 
 
-function closeJournalWriter() {
+function renderJournal() {
 
-  const form = document.getElementById("journalForm");
+  const list =
+    document.getElementById("journal-list");
 
-  if (form) {
-    form.style.display = "none";
-  }
-}
-
-
-function saveJournal() {
-
-  const titleInput = document.getElementById("journalTitle");
-  const contentInput = document.getElementById("journalContent");
-
-  const title = titleInput.value.trim();
-  const content = contentInput.value.trim();
-
-  if (!title || !content) {
-    alert("Please write a title and your journal entry.");
-    return;
-  }
-
-  let entries =
-    JSON.parse(localStorage.getItem("journalEntries")) || [];
-
-  const entry = {
-    title: title,
-    content: content,
-    date: new Date().toLocaleDateString()
-  };
-
-  entries.push(entry);
-
-  localStorage.setItem(
-    "journalEntries",
-    JSON.stringify(entries)
-  );
-
-  titleInput.value = "";
-  contentInput.value = "";
-
-  closeJournalWriter();
-
-  loadJournal();
-}
-
-
-function loadJournal() {
-
-  const list = document.getElementById("journalList");
-
-  if (!list) return;
-
-  const entries =
-    JSON.parse(localStorage.getItem("journalEntries")) || [];
-
-  if (entries.length === 0) {
+  if (journals.length === 0) {
 
     list.innerHTML = `
-      <div class="empty-state">
-        <span>♡</span>
-        <h3>Your journal is empty.</h3>
-        <p>Start writing something that belongs only to you.</p>
-
-        <button class="primary-btn"
-                onclick="openJournalWriter()">
-          Write your first entry
-        </button>
+      <div class="empty">
+        Your first journal entry will appear here ♡
       </div>
     `;
 
@@ -122,395 +130,852 @@ function loadJournal() {
   }
 
 
-  list.innerHTML = "";
+  list.innerHTML = journals.map((entry, index) => {
 
-  entries.forEach(function(entry, index) {
+    return `
+      <div class="entry">
 
-    const card = document.createElement("div");
+        <div class="entry-number">
+          ${index + 1}
+        </div>
 
-    card.className = "journal-entry";
+        <div>
 
-    card.innerHTML = `
-      <div class="entry-number">
-        ${String(index + 1).padStart(2, "0")}
+          <div class="entry-title">
+            ${escapeHTML(entry.title)}
+          </div>
+
+          <div class="entry-date">
+            ${entry.date}
+          </div>
+
+          <div class="entry-preview">
+            ${escapeHTML(entry.content)}
+          </div>
+
+        </div>
+
+        <button
+          class="delete"
+          data-delete-journal="${index}">
+          ×
+        </button>
+
       </div>
-
-      <div class="entry-info">
-        <h3>${escapeHTML(entry.title)}</h3>
-        <p>${escapeHTML(entry.date)}</p>
-      </div>
-
-      <span class="arrow">↗</span>
     `;
 
-    card.onclick = function() {
-      openJournalEntry(entry, index + 1);
-    };
+  }).join("");
 
-    list.appendChild(card);
+
+  document
+    .querySelectorAll("[data-delete-journal]")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const index =
+          Number(button.dataset.deleteJournal);
+
+        journals.splice(index, 1);
+
+        saveJournalData();
+
+      });
+
+    });
+
+}
+
+
+function saveJournalData() {
+
+  localStorage.setItem(
+    "myLittleNotes_journal",
+    JSON.stringify(journals)
+  );
+
+  renderJournal();
+
+}
+
+
+document
+  .getElementById("save-journal")
+  .addEventListener("click", () => {
+
+    const title =
+      document
+        .getElementById("journal-title")
+        .value
+        .trim();
+
+    const content =
+      document
+        .getElementById("journal-content")
+        .value
+        .trim();
+
+
+    if (!title && !content) {
+
+      alert("Write something first ♡");
+
+      return;
+    }
+
+
+    journals.unshift({
+
+      title: title || "Untitled",
+
+      content: content,
+
+      date: new Date().toLocaleDateString()
+
+    });
+
+
+    saveJournalData();
+
+
+    document.getElementById("journal-title").value = "";
+
+    document.getElementById("journal-content").value = "";
+
+    document
+      .getElementById("journal-form")
+      .classList.remove("open");
 
   });
+
+
+/* ---------- TODO ---------- */
+
+let todos =
+  JSON.parse(
+    localStorage.getItem("myLittleNotes_todos")
+  ) || [];
+
+
+function renderTodos() {
+
+  const list =
+    document.getElementById("todo-list");
+
+
+  if (todos.length === 0) {
+
+    list.innerHTML = `
+      <div class="empty">
+        Nothing here yet ♡
+      </div>
+    `;
+
+    return;
+  }
+
+
+  list.innerHTML = todos.map((task, index) => {
+
+    return `
+      <div class="todo-item">
+
+        <input
+          type="checkbox"
+          ${task.done ? "checked" : ""}
+          data-todo-check="${index}"
+        >
+
+        <span>
+          ${escapeHTML(task.text)}
+        </span>
+
+        <button
+          class="delete"
+          data-delete-todo="${index}">
+          ×
+        </button>
+
+      </div>
+    `;
+
+  }).join("");
+
+
+  document
+    .querySelectorAll("[data-todo-check]")
+    .forEach(box => {
+
+      box.addEventListener("change", () => {
+
+        const index =
+          Number(box.dataset.todoCheck);
+
+        todos[index].done = box.checked;
+
+        saveTodos();
+
+      });
+
+    });
+
+
+  document
+    .querySelectorAll("[data-delete-todo]")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const index =
+          Number(button.dataset.deleteTodo);
+
+        todos.splice(index, 1);
+
+        saveTodos();
+
+      });
+
+    });
+
 }
 
 
-function openJournalEntry(entry, number) {
+function saveTodos() {
 
-  const list = document.getElementById("journalList");
-  const form = document.getElementById("journalForm");
-  const reader = document.getElementById("journalReader");
+  localStorage.setItem(
+    "myLittleNotes_todos",
+    JSON.stringify(todos)
+  );
 
-  if (list) {
-    list.style.display = "none";
-  }
+  renderTodos();
 
-  if (form) {
-    form.style.display = "none";
-  }
-
-  if (reader) {
-    reader.style.display = "block";
-  }
-
-  document.getElementById("readerNumber").textContent =
-    "ENTRY " + String(number).padStart(2, "0");
-
-  document.getElementById("readerTitle").textContent =
-    entry.title;
-
-  document.getElementById("readerDate").textContent =
-    entry.date;
-
-  document.getElementById("readerContent").textContent =
-    entry.content;
 }
 
 
-function closeJournalEntry() {
+document
+  .getElementById("save-todo")
+  .addEventListener("click", () => {
 
-  const reader = document.getElementById("journalReader");
-  const list = document.getElementById("journalList");
+    const input =
+      document.getElementById("todo-input");
 
-  if (reader) {
-    reader.style.display = "none";
-  }
+    const text = input.value.trim();
 
-  if (list) {
-    list.style.display = "block";
-  }
 
-  loadJournal();
-}
+    if (!text) {
+
+      alert("Write a task first ♡");
+
+      return;
+    }
+
+
+    todos.push({
+
+      text: text,
+
+      done: false
+
+    });
+
+
+    input.value = "";
+
+    saveTodos();
+
+
+    document
+      .getElementById("todo-form")
+      .classList.remove("open");
+
+  });
 
 
 /* ---------- NOTES ---------- */
 
-function addNote() {
-
-  const titleInput = document.getElementById("noteTitle");
-  const contentInput = document.getElementById("noteContent");
-
-  const title = titleInput.value.trim();
-  const content = contentInput.value.trim();
-
-  if (!title || !content) {
-    alert("Please write a title and your note.");
-    return;
-  }
-
-  let notes =
-    JSON.parse(localStorage.getItem("notes")) || [];
-
-  notes.push({
-    title: title,
-    content: content,
-    date: new Date().toLocaleDateString()
-  });
-
-  localStorage.setItem(
-    "notes",
-    JSON.stringify(notes)
-  );
-
-  titleInput.value = "";
-  contentInput.value = "";
-
-  loadNotes();
-}
+let notes =
+  JSON.parse(
+    localStorage.getItem("myLittleNotes_notes")
+  ) || [];
 
 
-function loadNotes() {
+function renderNotes() {
 
-  const list = document.getElementById("noteList");
+  const list =
+    document.getElementById("notes-list");
 
-  if (!list) return;
-
-  const notes =
-    JSON.parse(localStorage.getItem("notes")) || [];
 
   if (notes.length === 0) {
 
     list.innerHTML = `
-      <div class="empty-state">
-        <span>✎</span>
-        <h3>No notes yet.</h3>
-        <p>Your thoughts and ideas will appear here.</p>
+      <div class="empty">
+        Your notes will appear here ♡
       </div>
     `;
 
     return;
   }
 
-  list.innerHTML = "";
 
-  notes.forEach(function(note) {
+  list.innerHTML = notes.map((note, index) => {
 
-    const card = document.createElement("div");
+    return `
+      <article class="note-card">
 
-    card.className = "note-card";
+        <button
+          class="delete"
+          data-delete-note="${index}">
+          ×
+        </button>
 
-    card.innerHTML = `
-      <h3>${escapeHTML(note.title)}</h3>
-      <p>${escapeHTML(note.content)}</p>
-      <small>${escapeHTML(note.date)}</small>
+        <h3>
+          ${escapeHTML(note.title)}
+        </h3>
+
+        <p>
+          ${escapeHTML(note.content)}
+        </p>
+
+        <small>
+          ${note.date}
+        </small>
+
+      </article>
     `;
 
-    list.appendChild(card);
-
-  });
-}
+  }).join("");
 
 
-/* ---------- TO DO LIST ---------- */
+  document
+    .querySelectorAll("[data-delete-note]")
+    .forEach(button => {
 
-function addTask() {
+      button.addEventListener("click", () => {
 
-  const input = document.getElementById("taskInput");
+        const index =
+          Number(button.dataset.deleteNote);
 
-  const text = input.value.trim();
+        notes.splice(index, 1);
 
-  if (!text) {
-    return;
-  }
+        saveNotes();
 
-  let tasks =
-    JSON.parse(localStorage.getItem("tasks")) || [];
-
-  tasks.push({
-    text: text,
-    completed: false
-  });
-
-  localStorage.setItem(
-    "tasks",
-    JSON.stringify(tasks)
-  );
-
-  input.value = "";
-
-  loadTasks();
-}
-
-
-function loadTasks() {
-
-  const list = document.getElementById("taskList");
-
-  if (!list) return;
-
-  const tasks =
-    JSON.parse(localStorage.getItem("tasks")) || [];
-
-  if (tasks.length === 0) {
-
-    list.innerHTML = `
-      <div class="empty-state">
-        <span>☑</span>
-        <h3>Nothing here yet.</h3>
-        <p>Add something you want to get done.</p>
-      </div>
-    `;
-
-    return;
-  }
-
-  list.innerHTML = "";
-
-  tasks.forEach(function(task, index) {
-
-    const item = document.createElement("div");
-
-    item.className = "task";
-
-    if (task.completed) {
-      item.classList.add("completed");
-    }
-
-    item.innerHTML = `
-      <input
-        type="checkbox"
-        ${task.completed ? "checked" : ""}
-      >
-
-      <span>${escapeHTML(task.text)}</span>
-    `;
-
-    const checkbox = item.querySelector("input");
-
-    checkbox.addEventListener("change", function() {
-
-      tasks[index].completed = checkbox.checked;
-
-      localStorage.setItem(
-        "tasks",
-        JSON.stringify(tasks)
-      );
-
-      loadTasks();
+      });
 
     });
 
-    list.appendChild(item);
-
-  });
 }
 
 
-/* ---------- BOOKSHELF ---------- */
-
-function addBook() {
-
-  const titleInput = document.getElementById("bookTitle");
-  const authorInput = document.getElementById("bookAuthor");
-
-  const title = titleInput.value.trim();
-  const author = authorInput.value.trim();
-
-  if (!title) {
-    alert("Please enter the book title.");
-    return;
-  }
-
-  let books =
-    JSON.parse(localStorage.getItem("books")) || [];
-
-  books.push({
-    title: title,
-    author: author || "Unknown author"
-  });
+function saveNotes() {
 
   localStorage.setItem(
-    "books",
-    JSON.stringify(books)
+    "myLittleNotes_notes",
+    JSON.stringify(notes)
   );
 
-  titleInput.value = "";
-  authorInput.value = "";
+  renderNotes();
 
-  loadBooks();
 }
 
 
-function loadBooks() {
+document
+  .getElementById("save-note")
+  .addEventListener("click", () => {
 
-  const list = document.getElementById("bookList");
+    const title =
+      document.getElementById("note-title").value.trim();
 
-  if (!list) return;
+    const content =
+      document.getElementById("note-content").value.trim();
 
-  const books =
-    JSON.parse(localStorage.getItem("books")) || [];
 
-  if (books.length === 0) {
+    if (!title && !content) {
+
+      alert("Write something first ♡");
+
+      return;
+    }
+
+
+    notes.unshift({
+
+      title: title || "Untitled",
+
+      content: content,
+
+      date: new Date().toLocaleDateString()
+
+    });
+
+
+    saveNotes();
+
+
+    document.getElementById("note-title").value = "";
+
+    document.getElementById("note-content").value = "";
+
+
+    document
+      .getElementById("notes-form")
+      .classList.remove("open");
+
+  });
+
+
+/* ---------- HOBBIES ---------- */
+
+let hobbies =
+  JSON.parse(
+    localStorage.getItem("myLittleNotes_hobbies")
+  ) || [];
+
+
+function renderHobbies() {
+
+  const list =
+    document.getElementById("hobbies-list");
+
+
+  if (hobbies.length === 0) {
 
     list.innerHTML = `
-      <div class="empty-state">
-        <span>▥</span>
-        <h3>Your bookshelf is empty.</h3>
-        <p>Add the books you love or want to read.</p>
+      <div class="empty">
+        Add the things you love doing ♡
       </div>
     `;
 
     return;
   }
 
-  list.innerHTML = "";
 
-  books.forEach(function(book, index) {
+  list.innerHTML = hobbies.map((hobby, index) => {
 
-    const card = document.createElement("div");
+    return `
+      <article class="note-card">
 
-    card.className = "book-card";
+        <button
+          class="delete"
+          data-delete-hobby="${index}">
+          ×
+        </button>
 
-    card.innerHTML = `
-      <div class="book-number">
-        ${String(index + 1).padStart(2, "0")}
-      </div>
+        <h3>
+          ♡ ${escapeHTML(hobby.name)}
+        </h3>
 
-      <div>
-        <h3>${escapeHTML(book.title)}</h3>
-        <p>${escapeHTML(book.author)}</p>
-      </div>
+        <p>
+          ${escapeHTML(hobby.content)}
+        </p>
+
+      </article>
     `;
 
-    list.appendChild(card);
+  }).join("");
+
+
+  document
+    .querySelectorAll("[data-delete-hobby]")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const index =
+          Number(button.dataset.deleteHobby);
+
+        hobbies.splice(index, 1);
+
+        saveHobbies();
+
+      });
+
+    });
+
+}
+
+
+function saveHobbies() {
+
+  localStorage.setItem(
+    "myLittleNotes_hobbies",
+    JSON.stringify(hobbies)
+  );
+
+  renderHobbies();
+
+}
+
+
+document
+  .getElementById("save-hobby")
+  .addEventListener("click", () => {
+
+    const name =
+      document.getElementById("hobby-name").value.trim();
+
+    const content =
+      document.getElementById("hobby-content").value.trim();
+
+
+    if (!name) {
+
+      alert("Give your hobby a name ♡");
+
+      return;
+    }
+
+
+    hobbies.unshift({
+
+      name: name,
+
+      content: content
+
+    });
+
+
+    saveHobbies();
+
+
+    document.getElementById("hobby-name").value = "";
+
+    document.getElementById("hobby-content").value = "";
+
+
+    document
+      .getElementById("hobbies-form")
+      .classList.remove("open");
 
   });
-}
 
 
 /* ---------- MOOD ---------- */
 
-function setMood(mood) {
+let moods =
+  JSON.parse(
+    localStorage.getItem("myLittleNotes_moods")
+  ) || [];
 
-  const message =
-    document.getElementById("moodMessage");
 
-  if (!message) return;
+document.querySelectorAll("[data-mood]").forEach(button => {
 
-  const messages = {
+  button.addEventListener("click", () => {
 
-    happy: "You seem to be feeling happy today ☀️",
+    document.getElementById("mood-name").value =
+      button.dataset.mood;
 
-    calm: "A calm little moment 🌿",
+  });
 
-    sad: "It's okay to have a difficult day ☁️",
+});
 
-    tired: "Take things gently today 💤",
 
-    excited: "Something has you excited ✨",
+function renderMoods() {
 
-    confused: "It's okay not to have everything figured out ☾"
+  const list =
+    document.getElementById("mood-list");
 
-  };
 
-  message.textContent =
-    messages[mood] || "How are you feeling today?";
+  if (moods.length === 0) {
 
-  localStorage.setItem(
-    "todayMood",
-    mood
-  );
+    list.innerHTML = `
+      <div class="empty">
+        Your mood entries will appear here ♡
+      </div>
+    `;
+
+    return;
+  }
+
+
+  list.innerHTML = moods.map((mood, index) => {
+
+    return `
+      <article class="note-card">
+
+        <button
+          class="delete"
+          data-delete-mood="${index}">
+          ×
+        </button>
+
+        <h3>
+          ${escapeHTML(mood.name)}
+        </h3>
+
+        <p>
+          ${escapeHTML(mood.content)}
+        </p>
+
+        <small>
+          ${mood.date}
+        </small>
+
+      </article>
+    `;
+
+  }).join("");
+
+
+  document
+    .querySelectorAll("[data-delete-mood]")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const index =
+          Number(button.dataset.deleteMood);
+
+        moods.splice(index, 1);
+
+        saveMoods();
+
+      });
+
+    });
+
 }
 
 
-/* ---------- SECURITY ---------- */
+function saveMoods() {
 
-function escapeHTML(text) {
+  localStorage.setItem(
+    "myLittleNotes_moods",
+    JSON.stringify(moods)
+  );
 
-  const div = document.createElement("div");
+  renderMoods();
 
-  div.textContent = text;
+}
 
-  return div.innerHTML;
+
+document
+  .getElementById("save-mood")
+  .addEventListener("click", () => {
+
+    const name =
+      document.getElementById("mood-name").value.trim();
+
+    const content =
+      document.getElementById("mood-content").value.trim();
+
+
+    if (!name) {
+
+      alert("Choose your mood first ♡");
+
+      return;
+    }
+
+
+    moods.unshift({
+
+      name: name,
+
+      content: content,
+
+      date: new Date().toLocaleDateString()
+
+    });
+
+
+    saveMoods();
+
+
+    document.getElementById("mood-name").value = "";
+
+    document.getElementById("mood-content").value = "";
+
+
+    document
+      .getElementById("mood-form")
+      .classList.remove("open");
+
+  });
+
+
+/* ---------- BOOKSHELF ---------- */
+
+let books =
+  JSON.parse(
+    localStorage.getItem("myLittleNotes_books")
+  ) || [];
+
+
+function renderBooks() {
+
+  const list =
+    document.getElementById("books-list");
+
+
+  if (books.length === 0) {
+
+    list.innerHTML = `
+      <div class="empty">
+        Your bookshelf is waiting for its first book ♡
+      </div>
+    `;
+
+    return;
+  }
+
+
+  list.innerHTML = books.map((book, index) => {
+
+    return `
+      <article class="note-card">
+
+        <button
+          class="delete"
+          data-delete-book="${index}">
+          ×
+        </button>
+
+        <h3>
+          ▥ ${escapeHTML(book.title)}
+        </h3>
+
+        <p>
+          ${book.author
+            ? "by " + escapeHTML(book.author)
+            : ""
+          }
+
+          ${book.content
+            ? "\n\n" + escapeHTML(book.content)
+            : ""
+          }
+        </p>
+
+      </article>
+    `;
+
+  }).join("");
+
+
+  document
+    .querySelectorAll("[data-delete-book]")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const index =
+          Number(button.dataset.deleteBook);
+
+        books.splice(index, 1);
+
+        saveBooks();
+
+      });
+
+    });
+
+}
+
+
+function saveBooks() {
+
+  localStorage.setItem(
+    "myLittleNotes_books",
+    JSON.stringify(books)
+  );
+
+  renderBooks();
+
+}
+
+
+document
+  .getElementById("save-book")
+  .addEventListener("click", () => {
+
+    const title =
+      document.getElementById("book-title").value.trim();
+
+    const author =
+      document.getElementById("book-author").value.trim();
+
+    const content =
+      document.getElementById("book-content").value.trim();
+
+
+    if (!title) {
+
+      alert("Enter a book title ♡");
+
+      return;
+    }
+
+
+    books.unshift({
+
+      title: title,
+
+      author: author,
+
+      content: content
+
+    });
+
+
+    saveBooks();
+
+
+    document.getElementById("book-title").value = "";
+
+    document.getElementById("book-author").value = "";
+
+    document.getElementById("book-content").value = "";
+
+
+    document
+      .getElementById("book-form")
+      .classList.remove("open");
+
+  });
+
+
+/* ---------- SAFETY FOR USER TEXT ---------- */
+
+function escapeHTML(value) {
+
+  return String(value)
+
+    .replace(/&/g, "&amp;")
+
+    .replace(/</g, "&lt;")
+
+    .replace(/>/g, "&gt;")
+
+    .replace(/"/g, "&quot;")
+
+    .replace(/'/g, "&#039;");
+
 }
 
 
 /* ---------- START APP ---------- */
 
-document.addEventListener("DOMContentLoaded", function() {
+renderJournal();
 
-  loadJournal();
-  loadNotes();
-  loadTasks();
-  loadBooks();
+renderTodos();
 
-});
+renderNotes();
+
+renderHobbies();
+
+renderMoods();
+
+renderBooks();
+
+
+/* ---------- SERVICE WORKER ---------- */
+
+if ("serviceWorker" in navigator) {
+
+  window.addEventListener("load", () => {
+
+    navigator.serviceWorker.register("sw.js");
+
+  });
+
+   }
