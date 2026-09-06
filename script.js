@@ -1,582 +1,516 @@
-/* =========================================
-   MY LITTLE NOTES — FUNCTIONALITY
-========================================= */
-
-let journalEntries =
-    JSON.parse(localStorage.getItem("journalEntries")) || [];
-
-let notes =
-    JSON.parse(localStorage.getItem("notes")) || [];
-
-let tasks =
-    JSON.parse(localStorage.getItem("tasks")) || [];
-
-let books =
-    JSON.parse(localStorage.getItem("books")) || [];
+/* =====================================
+   MY LITTLE NOTES — JAVASCRIPT
+   ===================================== */
 
 
-/* =========================================
-   PAGE NAVIGATION
-========================================= */
+/* ---------- PAGE NAVIGATION ---------- */
 
 function showPage(pageName) {
 
-    // Hide every page
-    document.querySelectorAll(".page").forEach(page => {
-        page.classList.remove("active");
-    });
+  const pages = document.querySelectorAll(".page");
 
-    // Show selected page
-    const selectedPage = document.getElementById(pageName);
+  pages.forEach(function(page) {
+    page.classList.remove("active");
+  });
 
-    if (selectedPage) {
-        selectedPage.classList.add("active");
-    }
+  const selectedPage = document.getElementById(pageName);
 
-    // Update sidebar buttons
-    document.querySelectorAll(".nav-button").forEach(button => {
-        button.classList.remove("active");
-    });
+  if (selectedPage) {
+    selectedPage.classList.add("active");
+  }
 
-    const activeButton =
-        document.querySelector(
-            `.nav-button[onclick="showPage('${pageName}')"]`
-        );
-
-    if (activeButton) {
-        activeButton.classList.add("active");
-    }
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+  window.scrollTo(0, 0);
 }
 
 
-/* =========================================
-   HOME CARDS
-========================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    // Make home cards clickable
-    document.querySelectorAll(".home-card").forEach(card => {
-
-        const name =
-            card.querySelector(".card-name")?.textContent
-            .trim()
-            .toLowerCase();
-
-        const pages = {
-            "journal": "journal",
-            "to do list": "todo",
-            "notes": "notes",
-            "hobbies": "hobbies",
-            "mood": "mood",
-            "bookshelf": "bookshelf"
-        };
-
-        if (pages[name]) {
-            card.addEventListener("click", () => {
-                showPage(pages[name]);
-            });
-        }
-    });
-
-    loadJournal();
-    loadNotes();
-    loadTasks();
-    loadBooks();
-
-});
-
-
-/* =========================================
-   JOURNAL
-========================================= */
+/* ---------- JOURNAL ---------- */
 
 function openJournalWriter() {
 
-    const form = document.getElementById("journalForm");
+  const form = document.getElementById("journalForm");
+  const reader = document.getElementById("journalReader");
 
-    if (!form) return;
+  if (reader) {
+    reader.style.display = "none";
+  }
 
-    form.classList.remove("hidden");
+  if (form) {
+    form.style.display = "block";
+  }
 
-    const list = document.getElementById("journalList");
+  const title = document.getElementById("journalTitle");
 
-    if (list) {
-        list.classList.add("hidden");
-    }
+  if (title) {
+    title.focus();
+  }
 }
 
 
 function closeJournalWriter() {
 
-    const form = document.getElementById("journalForm");
+  const form = document.getElementById("journalForm");
 
-    if (!form) return;
-
-    form.classList.add("hidden");
-
-    const list = document.getElementById("journalList");
-
-    if (list) {
-        list.classList.remove("hidden");
-    }
+  if (form) {
+    form.style.display = "none";
+  }
 }
 
 
 function saveJournal() {
 
-    const titleInput =
-        document.getElementById("journalTitle");
+  const titleInput = document.getElementById("journalTitle");
+  const contentInput = document.getElementById("journalContent");
 
-    const contentInput =
-        document.getElementById("journalContent");
+  const title = titleInput.value.trim();
+  const content = contentInput.value.trim();
 
-    if (!titleInput || !contentInput) return;
+  if (!title || !content) {
+    alert("Please write a title and your journal entry.");
+    return;
+  }
 
-    const title = titleInput.value.trim();
-    const content = contentInput.value.trim();
+  let entries =
+    JSON.parse(localStorage.getItem("journalEntries")) || [];
 
-    if (!title || !content) {
-        alert("Please write a title and your journal entry.");
-        return;
-    }
+  const entry = {
+    title: title,
+    content: content,
+    date: new Date().toLocaleDateString()
+  };
 
-    const entry = {
-        id: Date.now(),
-        title: title,
-        content: content,
-        date: new Date().toLocaleDateString()
-    };
+  entries.push(entry);
 
-    journalEntries.push(entry);
+  localStorage.setItem(
+    "journalEntries",
+    JSON.stringify(entries)
+  );
 
-    localStorage.setItem(
-        "journalEntries",
-        JSON.stringify(journalEntries)
-    );
+  titleInput.value = "";
+  contentInput.value = "";
 
-    titleInput.value = "";
-    contentInput.value = "";
+  closeJournalWriter();
 
-    closeJournalWriter();
-    loadJournal();
+  loadJournal();
 }
 
 
 function loadJournal() {
 
-    const list =
-        document.getElementById("journalList");
+  const list = document.getElementById("journalList");
 
-    if (!list) return;
+  if (!list) return;
 
-    list.innerHTML = "";
+  const entries =
+    JSON.parse(localStorage.getItem("journalEntries")) || [];
 
-    if (journalEntries.length === 0) {
+  if (entries.length === 0) {
 
-        list.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">♡</div>
-                <h3>Your journal is empty</h3>
-                <p>Tap + to write your first entry.</p>
-            </div>
-        `;
+    list.innerHTML = `
+      <div class="empty-state">
+        <span>♡</span>
+        <h3>Your journal is empty.</h3>
+        <p>Start writing something that belongs only to you.</p>
 
-        return;
-    }
+        <button class="primary-btn"
+                onclick="openJournalWriter()">
+          Write your first entry
+        </button>
+      </div>
+    `;
 
-    journalEntries.forEach((entry, index) => {
+    return;
+  }
 
-        const item = document.createElement("div");
 
-        item.className = "journal-entry";
+  list.innerHTML = "";
 
-        item.innerHTML = `
-            <div class="entry-number">
-                ${index + 1}
-            </div>
+  entries.forEach(function(entry, index) {
 
-            <div class="entry-info">
+    const card = document.createElement("div");
 
-                <div class="entry-title">
-                    ${escapeHTML(entry.title)}
-                </div>
+    card.className = "journal-entry";
 
-                <div class="entry-date">
-                    ${entry.date}
-                </div>
+    card.innerHTML = `
+      <div class="entry-number">
+        ${String(index + 1).padStart(2, "0")}
+      </div>
 
-                <div class="entry-preview">
-                    ${escapeHTML(
-                        entry.content.substring(0, 70)
-                    )}${entry.content.length > 70 ? "..." : ""}
-                </div>
+      <div class="entry-info">
+        <h3>${escapeHTML(entry.title)}</h3>
+        <p>${escapeHTML(entry.date)}</p>
+      </div>
 
-            </div>
+      <span class="arrow">↗</span>
+    `;
 
-            <div class="entry-arrow">
-                →
-            </div>
-        `;
+    card.onclick = function() {
+      openJournalEntry(entry, index + 1);
+    };
 
-        item.addEventListener("click", () => {
-            openJournalEntry(entry, index + 1);
-        });
+    list.appendChild(card);
 
-        list.appendChild(item);
-    });
+  });
 }
 
 
 function openJournalEntry(entry, number) {
 
-    const list =
-        document.getElementById("journalList");
+  const list = document.getElementById("journalList");
+  const form = document.getElementById("journalForm");
+  const reader = document.getElementById("journalReader");
 
-    const reader =
-        document.getElementById("journalReader");
+  if (list) {
+    list.style.display = "none";
+  }
 
-    if (!list || !reader) return;
+  if (form) {
+    form.style.display = "none";
+  }
 
-    list.classList.add("hidden");
-    reader.classList.remove("hidden");
+  if (reader) {
+    reader.style.display = "block";
+  }
 
-    reader.innerHTML = `
+  document.getElementById("readerNumber").textContent =
+    "ENTRY " + String(number).padStart(2, "0");
 
-        <button class="back-text"
-                onclick="closeJournalEntry()">
-            ← Back to Journal
-        </button>
+  document.getElementById("readerTitle").textContent =
+    entry.title;
 
-        <div class="journal-reader">
+  document.getElementById("readerDate").textContent =
+    entry.date;
 
-            <div class="reader-number">
-                ${number}
-            </div>
-
-            <h1>
-                ${escapeHTML(entry.title)}
-            </h1>
-
-            <div class="reader-date">
-                ${entry.date}
-            </div>
-
-            <div class="reader-content">
-                ${escapeHTML(entry.content)}
-            </div>
-
-        </div>
-    `;
+  document.getElementById("readerContent").textContent =
+    entry.content;
 }
 
 
 function closeJournalEntry() {
 
-    const reader =
-        document.getElementById("journalReader");
+  const reader = document.getElementById("journalReader");
+  const list = document.getElementById("journalList");
 
-    const list =
-        document.getElementById("journalList");
+  if (reader) {
+    reader.style.display = "none";
+  }
 
-    if (reader) {
-        reader.classList.add("hidden");
-    }
+  if (list) {
+    list.style.display = "block";
+  }
 
-    if (list) {
-        list.classList.remove("hidden");
-    }
+  loadJournal();
 }
 
 
-/* =========================================
-   TO DO LIST
-========================================= */
-
-function addTask() {
-
-    const input =
-        document.getElementById("taskInput");
-
-    if (!input) return;
-
-    const text = input.value.trim();
-
-    if (!text) return;
-
-    tasks.push({
-        id: Date.now(),
-        text: text,
-        completed: false
-    });
-
-    localStorage.setItem(
-        "tasks",
-        JSON.stringify(tasks)
-    );
-
-    input.value = "";
-
-    loadTasks();
-}
-
-
-function loadTasks() {
-
-    const container =
-        document.getElementById("taskList");
-
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    tasks.forEach(task => {
-
-        const item = document.createElement("div");
-
-        item.className =
-            "task" +
-            (task.completed ? " done" : "");
-
-        item.innerHTML = `
-
-            <input
-                type="checkbox"
-                ${task.completed ? "checked" : ""}
-            >
-
-            <span>
-                ${escapeHTML(task.text)}
-            </span>
-
-        `;
-
-        const checkbox =
-            item.querySelector("input");
-
-        checkbox.addEventListener("change", () => {
-
-            task.completed = checkbox.checked;
-
-            localStorage.setItem(
-                "tasks",
-                JSON.stringify(tasks)
-            );
-
-            loadTasks();
-        });
-
-        container.appendChild(item);
-    });
-}
-
-
-/* =========================================
-   NOTES
-========================================= */
+/* ---------- NOTES ---------- */
 
 function addNote() {
 
-    const title =
-        document.getElementById("noteTitle");
+  const titleInput = document.getElementById("noteTitle");
+  const contentInput = document.getElementById("noteContent");
 
-    const content =
-        document.getElementById("noteContent");
+  const title = titleInput.value.trim();
+  const content = contentInput.value.trim();
 
-    if (!title || !content) return;
+  if (!title || !content) {
+    alert("Please write a title and your note.");
+    return;
+  }
 
-    if (
-        !title.value.trim() ||
-        !content.value.trim()
-    ) {
-        alert("Write something first.");
-        return;
-    }
+  let notes =
+    JSON.parse(localStorage.getItem("notes")) || [];
 
-    notes.push({
-        id: Date.now(),
-        title: title.value.trim(),
-        content: content.value.trim()
-    });
+  notes.push({
+    title: title,
+    content: content,
+    date: new Date().toLocaleDateString()
+  });
 
-    localStorage.setItem(
-        "notes",
-        JSON.stringify(notes)
-    );
+  localStorage.setItem(
+    "notes",
+    JSON.stringify(notes)
+  );
 
-    title.value = "";
-    content.value = "";
+  titleInput.value = "";
+  contentInput.value = "";
 
-    loadNotes();
+  loadNotes();
 }
 
 
 function loadNotes() {
 
-    const list =
-        document.getElementById("noteList");
+  const list = document.getElementById("noteList");
 
-    if (!list) return;
+  if (!list) return;
 
-    list.innerHTML = "";
+  const notes =
+    JSON.parse(localStorage.getItem("notes")) || [];
 
-    if (notes.length === 0) {
+  if (notes.length === 0) {
 
-        list.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">✧</div>
-                <h3>No notes yet</h3>
-                <p>Your little thoughts will live here.</p>
-            </div>
-        `;
+    list.innerHTML = `
+      <div class="empty-state">
+        <span>✎</span>
+        <h3>No notes yet.</h3>
+        <p>Your thoughts and ideas will appear here.</p>
+      </div>
+    `;
 
-        return;
-    }
+    return;
+  }
 
-    notes.forEach(note => {
+  list.innerHTML = "";
 
-        const card =
-            document.createElement("div");
+  notes.forEach(function(note) {
 
-        card.className = "note-card";
+    const card = document.createElement("div");
 
-        card.innerHTML = `
-            <h3>
-                ${escapeHTML(note.title)}
-            </h3>
+    card.className = "note-card";
 
-            <p>
-                ${escapeHTML(note.content)}
-            </p>
-        `;
+    card.innerHTML = `
+      <h3>${escapeHTML(note.title)}</h3>
+      <p>${escapeHTML(note.content)}</p>
+      <small>${escapeHTML(note.date)}</small>
+    `;
 
-        list.appendChild(card);
-    });
+    list.appendChild(card);
+
+  });
 }
 
 
-/* =========================================
-   BOOKSHELF
-========================================= */
+/* ---------- TO DO LIST ---------- */
+
+function addTask() {
+
+  const input = document.getElementById("taskInput");
+
+  const text = input.value.trim();
+
+  if (!text) {
+    return;
+  }
+
+  let tasks =
+    JSON.parse(localStorage.getItem("tasks")) || [];
+
+  tasks.push({
+    text: text,
+    completed: false
+  });
+
+  localStorage.setItem(
+    "tasks",
+    JSON.stringify(tasks)
+  );
+
+  input.value = "";
+
+  loadTasks();
+}
+
+
+function loadTasks() {
+
+  const list = document.getElementById("taskList");
+
+  if (!list) return;
+
+  const tasks =
+    JSON.parse(localStorage.getItem("tasks")) || [];
+
+  if (tasks.length === 0) {
+
+    list.innerHTML = `
+      <div class="empty-state">
+        <span>☑</span>
+        <h3>Nothing here yet.</h3>
+        <p>Add something you want to get done.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  list.innerHTML = "";
+
+  tasks.forEach(function(task, index) {
+
+    const item = document.createElement("div");
+
+    item.className = "task";
+
+    if (task.completed) {
+      item.classList.add("completed");
+    }
+
+    item.innerHTML = `
+      <input
+        type="checkbox"
+        ${task.completed ? "checked" : ""}
+      >
+
+      <span>${escapeHTML(task.text)}</span>
+    `;
+
+    const checkbox = item.querySelector("input");
+
+    checkbox.addEventListener("change", function() {
+
+      tasks[index].completed = checkbox.checked;
+
+      localStorage.setItem(
+        "tasks",
+        JSON.stringify(tasks)
+      );
+
+      loadTasks();
+
+    });
+
+    list.appendChild(item);
+
+  });
+}
+
+
+/* ---------- BOOKSHELF ---------- */
 
 function addBook() {
 
-    const title =
-        document.getElementById("bookTitle");
+  const titleInput = document.getElementById("bookTitle");
+  const authorInput = document.getElementById("bookAuthor");
 
-    const author =
-        document.getElementById("bookAuthor");
+  const title = titleInput.value.trim();
+  const author = authorInput.value.trim();
 
-    if (!title || !author) return;
+  if (!title) {
+    alert("Please enter the book title.");
+    return;
+  }
 
-    if (!title.value.trim()) {
-        alert("Enter a book title.");
-        return;
-    }
+  let books =
+    JSON.parse(localStorage.getItem("books")) || [];
 
-    books.push({
-        title: title.value.trim(),
-        author: author.value.trim()
-    });
+  books.push({
+    title: title,
+    author: author || "Unknown author"
+  });
 
-    localStorage.setItem(
-        "books",
-        JSON.stringify(books)
-    );
+  localStorage.setItem(
+    "books",
+    JSON.stringify(books)
+  );
 
-    title.value = "";
-    author.value = "";
+  titleInput.value = "";
+  authorInput.value = "";
 
-    loadBooks();
+  loadBooks();
 }
 
 
 function loadBooks() {
 
-    const list =
-        document.getElementById("bookList");
+  const list = document.getElementById("bookList");
 
-    if (!list) return;
+  if (!list) return;
 
-    list.innerHTML = "";
+  const books =
+    JSON.parse(localStorage.getItem("books")) || [];
 
-    if (books.length === 0) {
+  if (books.length === 0) {
 
-        list.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">♡</div>
-                <h3>Your bookshelf is empty</h3>
-                <p>Add the books you love.</p>
-            </div>
-        `;
+    list.innerHTML = `
+      <div class="empty-state">
+        <span>▥</span>
+        <h3>Your bookshelf is empty.</h3>
+        <p>Add the books you love or want to read.</p>
+      </div>
+    `;
 
-        return;
-    }
+    return;
+  }
 
-    books.forEach(book => {
+  list.innerHTML = "";
 
-        const card =
-            document.createElement("div");
+  books.forEach(function(book, index) {
 
-        card.className = "book-card";
+    const card = document.createElement("div");
 
-        card.innerHTML = `
+    card.className = "book-card";
 
-            <div class="book-icon">
-                ▥
-            </div>
+    card.innerHTML = `
+      <div class="book-number">
+        ${String(index + 1).padStart(2, "0")}
+      </div>
 
-            <h3>
-                ${escapeHTML(book.title)}
-            </h3>
+      <div>
+        <h3>${escapeHTML(book.title)}</h3>
+        <p>${escapeHTML(book.author)}</p>
+      </div>
+    `;
 
-            <p>
-                ${escapeHTML(book.author)}
-            </p>
+    list.appendChild(card);
 
-        `;
-
-        list.appendChild(card);
-    });
+  });
 }
 
 
-/* =========================================
-   MOOD
-========================================= */
+/* ---------- MOOD ---------- */
 
 function setMood(mood) {
 
-    const result =
-        document.getElementById("moodResult");
+  const message =
+    document.getElementById("moodMessage");
 
-    if (!result) return;
+  if (!message) return;
 
-    result.textContent =
-        "Today I feel " + mood + " ♡";
+  const messages = {
 
-    localStorage.setItem(
-        "currentMood",
-        mood
-    );
+    happy: "You seem to be feeling happy today ☀️",
+
+    calm: "A calm little moment 🌿",
+
+    sad: "It's okay to have a difficult day ☁️",
+
+    tired: "Take things gently today 💤",
+
+    excited: "Something has you excited ✨",
+
+    confused: "It's okay not to have everything figured out ☾"
+
+  };
+
+  message.textContent =
+    messages[mood] || "How are you feeling today?";
+
+  localStorage.setItem(
+    "todayMood",
+    mood
+  );
 }
 
 
-/* =========================================
-   SECURITY
-========================================= */
+/* ---------- SECURITY ---------- */
 
 function escapeHTML(text) {
 
-    const div =
-        document.createElement("div");
+  const div = document.createElement("div");
 
-    div.textContent = text;
+  div.textContent = text;
 
-    return div.innerHTML;
+  return div.innerHTML;
 }
+
+
+/* ---------- START APP ---------- */
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  loadJournal();
+  loadNotes();
+  loadTasks();
+  loadBooks();
+
+});
